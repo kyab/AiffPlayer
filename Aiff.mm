@@ -61,6 +61,7 @@ signed short swapByteOrderShort(signed short org){
 - (void) loadFile: (NSString *)fileName{
 	NSLog(fileName);
 	
+	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
 	//const char *aiffFile = "/Users/koji/work/AiffReader/sound_files/MilkeyWay_48k_mono.aiff";
 	//_fileName = [NSString stringWithCString:aiffFile];
