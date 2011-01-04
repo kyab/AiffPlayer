@@ -35,6 +35,11 @@ class Controller
 		@auProcessor.stop
 	end
 	
+	def loadAiff(sender)
+		puts "load Aiff"
+		@auProcessor.loadAiff("/Users/koji/work/m/AiffReader/sound_files/MilkeyWay.aif");
+	end
+	
 	
 	def listOutputDevices(sender)
 		@auProcessor.listOutputDevices

@@ -186,6 +186,12 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 #define LOGENTER	NSLog(@"enter %@()", NSStringFromSelector(_cmd))
 @implementation AUProcessor
 
+- (id) init{
+	m_aiff = [[Aiff alloc] init];
+	return self;
+}
+
+
 - (void) listOutputDevices{
 	
 	//CAPlayThroughのAudioDeviceListを参考にした。
@@ -446,5 +452,11 @@ NSString *EnumToFOURCC(UInt32 val){
 - (void)setFreq:(int)freq{
 	gSinGenerator.setFreq(freq);
 }
+
+- (Boolean)loadAiff:(NSString *)fileName{
+	[m_aiff loadFile:fileName];
+	return YES;
+}
+
 
 @end

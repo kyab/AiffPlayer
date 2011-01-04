@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "Aiff.h"
 
 @interface AUProcessor : NSObject {
-
+	Aiff *m_aiff;
 }
 
 - (void) listOutputDevices;
@@ -22,5 +22,7 @@
 - (void) setCallback;
 
 - (void)setFreq:(int)freq;
+
+- (Boolean)loadAiff:(NSString *)fileName;
 
 @end
