@@ -9,7 +9,6 @@
 #import "Aiff.h"
 
 #include "ieee.h"
-#include "util.h"
 #include <string>
 #include <vector>
 
@@ -62,19 +61,18 @@ signed short swapByteOrderShort(signed short org){
 - (void) loadFile: (NSString *)fileName{
 	NSLog(fileName);
 	
-	//printf("%d\n", util());
 	
 	//const char *aiffFile = "/Users/koji/work/AiffReader/sound_files/MilkeyWay_48k_mono.aiff";
-	_fileName = [NSString stringWithCString:aiffFile];
+	//_fileName = [NSString stringWithCString:aiffFile];
 	
-	//_fileName = fileName;
+	_fileName = fileName;
 	
 	FILE *fp;
-	if ((fp = fopen(aiffFile,"rb")) == NULL){
-		printf("can't open file:%s.\n",aiffFile);
+	if ((fp = fopen([_fileName UTF8String],"rb")) == NULL){
+		NSLog(@"can't open file:%@.\n",_fileName);
 		return ;
 	}
-	printf("reading file : %s\n", aiffFile);
+	NSLog(@"reading file : %@\n", _fileName);
 	
 	//read "FORM" chunk
 	char str[5];
@@ -85,7 +83,7 @@ signed short swapByteOrderShort(signed short org){
 	unsigned long size;
 	fread(&size, 4,1, fp);
 	size = swapByteOrderULong(size);
-	printf("size = 0x%x(%ld bytes)\n", size,size);  
+	printf("size = 0x%lx(%ld bytes)\n", size,size);  
 	
 	//read "AIFF" formType tag
 	char formType[5];
@@ -102,7 +100,7 @@ signed short swapByteOrderShort(signed short org){
 	
 	fread(&size, 4,1, fp);
 	size = swapByteOrderULong(size);
-	printf("size = 0x%x(%ld bytes)\n", size,size);  
+	printf("size = 0x%lx(%ld bytes)\n", size,size);  
 	int prevPos = ftell(fp);
 	
 	unsigned short channels = 0;
@@ -130,7 +128,7 @@ signed short swapByteOrderShort(signed short org){
 			fread(&sampleRateBytes, 1, 10, fp);
 			double sampleRate = ConvertFromIeeeExtended(sampleRateBytes);
 			
-			printf("%d channels, %d bits, %.2f[Hz], %d samples\n", channels, bitSize, sampleRate, sampleFrames);
+			printf("%d channels, %ld bits, %.2f[Hz], %ld samples\n", channels, bitSize, sampleRate, sampleFrames);
 			
 			double duration = (double)sampleFrames / sampleRate;
 			printf("%.2f [seconds]\n", duration); 
@@ -148,20 +146,20 @@ signed short swapByteOrderShort(signed short org){
 	
 	fread(&size, 4,1, fp);
 	size = swapByteOrderULong(size);
-	printf("size = 0x%x(%ld bytes)\n", size,size);  	
+	printf("size = 0x%lx(%ld bytes)\n", size,size);  	
 	
 	cName = chunkName;
 	if (cName == "SSND"){
 		printf("dumping SSND chunk\n");
 		unsigned long offset = 0;
 		unsigned long blockSize = 0;
-		fread(&offset, 2, 1, fp);
-		fread(&blockSize, 2, 1, fp);
+		fread(&offset, 4, 1, fp);
+		fread(&blockSize, 4, 1, fp);
 		
 		offset = swapByteOrderULong(offset);
 		blockSize = swapByteOrderULong(blockSize);
 		
-		printf("offset = %d, blockSize = %d\n", offset, blockSize);
+		printf("offset = %ld, blockSize = %ld\n", offset, blockSize);
 	}
 	
 	//read samples
@@ -172,12 +170,12 @@ signed short swapByteOrderShort(signed short org){
 
 
 	printf("loading buffers...");
-	if (channels == 1){
+	//if (channels == 1){
 		//ensure size.
-		signed short samples[sampleFrames];
-		fread(samples, 2, sampleFrames, fp);
-		printf("sampleFrames = %d\n", sampleFrames);
-		for (int i = 0; i < sampleFrames ; i++){
+		signed short samples[sampleFrames*channels];
+		fread(samples, 2, sampleFrames*channels, fp);
+		printf("sampleFrames = %ld\n", sampleFrames);
+		for (int i = 0; i < sampleFrames*channels ; i++){
 
 			//signed short sample = swapByteOrderShort(samples[i]);
 			//signed short sample = samples[i];
@@ -185,7 +183,9 @@ signed short swapByteOrderShort(signed short org){
 			//	[NSNumber numberWithShort:sample]];
 			_stlbuffer.push_back(swapByteOrderShort(samples[i]));
 		}
-	}
+	
+	printf("STL Buffer array size = %lu\n", _stlbuffer.size());
+	//}
 	UnsignedWide endMicroSec;
 	Microseconds(&endMicroSec);
 	float startMicroSecFloat = startMicroSec.lo + startMicroSec.hi*4294967296.0; 

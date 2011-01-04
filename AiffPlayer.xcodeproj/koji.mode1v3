@@ -303,7 +303,7 @@
 							<real>201</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>330 -170 996 649 0 0 1440 878 </string>
+						<string>99 173 996 649 0 0 1440 878 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -333,7 +333,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>EB5FDD6C12D3024B00B34D5A</string>
+										<string>EB5FDD6D12D302EF00B34D5A</string>
 										<key>history</key>
 										<array>
 											<string>EB22FFF212C367B200042E89</string>
@@ -366,7 +366,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {751, 551}}</string>
 								<key>RubberWindowFrame</key>
-								<string>330 -170 996 649 0 0 1440 878 </string>
+								<string>99 173 996 649 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -386,7 +386,7 @@
 								<key>Frame</key>
 								<string>{{0, 556}, {751, 52}}</string>
 								<key>RubberWindowFrame</key>
-								<string>330 -170 996 649 0 0 1440 878 </string>
+								<string>99 173 996 649 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -566,7 +566,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>EB5FDD6B12D3021200B34D5A</string>
 		<string>EB5FDD3D12D2FFF800B34D5A</string>
 		<string>EB5FDD3E12D2FFF800B34D5A</string>
 		<string>EBB1B75712BB364200E07FD0</string>
@@ -576,7 +575,7 @@
 		<string>/Users/koji/work/m/AiffPlayer/AiffPlayer.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>330 -170 996 649 0 0 1440 878 </string>
+	<string>99 173 996 649 0 0 1440 878 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
