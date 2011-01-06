@@ -21,6 +21,12 @@
 - (void) setFormat;
 - (void) setCallback;
 
+
+
 - (Boolean)loadAiff:(NSString *)fileName;
+
+
+- (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
+(UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData;
 
 @end

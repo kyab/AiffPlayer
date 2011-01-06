@@ -23,6 +23,8 @@ OSStatus MyRender( void                        *inRefCon,
 				  UInt32                      inNumberFrames,
 				  AudioBufferList             *ioData
 				  ){
+	
+	/*
 	//NSLog(@"MyRender");
 	if ((gCount % 100) == 0){
 		NSLog(@"MyRender," 
@@ -52,9 +54,14 @@ OSStatus MyRender( void                        *inRefCon,
 		pBuffer[index] = sample;
 		pBuffer[index+1] = sample;
 	}
-
+	 
 	return noErr;
+	 */
+	AUProcessor *processor = (AUProcessor *)inRefCon;
+	return [processor renderCallback:ioActionFlags :inTimeStamp :inBusNumber :inNumberFrames :ioData];
+
 }
+
 
 void logComponentDescription(Component comp, ComponentDescription *pDesc){
 	//getting component information
@@ -84,6 +91,7 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 #define SUCCEEDED(result) (result == noErr)
 #define FAILED(result) (result != noErr)
 #define LOGENTER	NSLog(@"enter %@()", NSStringFromSelector(_cmd))
+
 @implementation AUProcessor
 
 - (id) init{
@@ -296,10 +304,6 @@ NSString *EnumToFOURCC(UInt32 val){
 		dump_struct(streamDescription);
 	}
 	NSLog(@"identifier = %@\n",EnumToFOURCC(streamDescription.mFormatID));
-	//[String init];
-	//[RUtil dump:streamDescription];
-	
-	//Objective-CからMacRubyで定義したクラス等は呼び出せない？
 	
 	//44100,16bit, stereoにする
 	streamDescription.mSampleRate = 44100.0;
@@ -324,16 +328,14 @@ NSString *EnumToFOURCC(UInt32 val){
 	
 	printf("succeeded to set format\n");
 
-
-	//RenderSinを参考にしてコールバックの設定と再生をしてみる。
-	
+	//RenderSinを参考にしてコールバックの設定と再生をしてみる。	
 }
 
 -(void) setCallback{
 	
 	AURenderCallbackStruct callBackInfo;
 	callBackInfo.inputProc = MyRender;
-	callBackInfo.inputProcRefCon = NULL;
+	callBackInfo.inputProcRefCon = self;
 	
 	OSStatus ret = AudioUnitSetProperty(gOutputUnit, 
 										kAudioUnitProperty_SetRenderCallback,
@@ -342,7 +344,7 @@ NSString *EnumToFOURCC(UInt32 val){
 										&callBackInfo,
 										sizeof(callBackInfo));
 	if (FAILED(ret)){
-		printf("failed to set callback = %d\n",ret);
+		printf("failed to set callback = %d\n",(int)ret);
 	}
 	
 	printf("succeeded to set callback\n");
@@ -354,6 +356,42 @@ NSString *EnumToFOURCC(UInt32 val){
 	[m_aiff loadFile:fileName];
 	return YES;
 }
+
+- (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
+(UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData{
+	//NSLog(@"MyRender");
+	if ((gCount % 100) == 0){
+		NSLog(@"MyRender," 
+			  "%f bus number = %u, frames = %u,"
+			  "ratescalar = %u", 
+			  inTimeStamp->mSampleTime, 
+			  inBusNumber, 
+			  inNumberFrames,
+			  inTimeStamp->mRateScalar);
+		
+		NSLog(@"buffer info: mNumberBuffers = %u,"
+			  "channels = %u,"
+			  "dataByteSize=%u\n", 
+			  ioData->mNumberBuffers,
+			  ioData->mBuffers[0].mNumberChannels,
+			  ioData->mBuffers[0].mDataByteSize);		//16bit,2chの場合はinNumberFrames*4
+	}
+	gCount++;
+	
+	UInt32 sampleNum = inNumberFrames;	//in my case
+	SInt16 *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
+	
+	
+	for(UInt32 i = 0; i< sampleNum; i++){
+		int index =  i*2;
+		SInt16 sample = 0;//gSinGenerator.gen2();
+		pBuffer[index] = sample;
+		pBuffer[index+1] = sample;
+	}
+	
+	return noErr;
+}
+
 
 
 @end
