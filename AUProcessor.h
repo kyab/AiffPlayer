@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "Aiff.h"
 
+#include <vector>
+
 @interface AUProcessor : NSObject {
 	Aiff *m_aiff;
 }

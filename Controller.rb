@@ -37,7 +37,8 @@ class Controller
 	
 	def loadAiff(sender)
 		puts "load Aiff"
-		@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
+		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
+		@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
 	end
 	
 	

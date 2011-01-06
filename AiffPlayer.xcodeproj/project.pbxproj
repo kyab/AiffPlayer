@@ -126,6 +126,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EB423EEB12D5D8B2009069BF /* Legacy */,
+				EB423EE912D5D89F009069BF /* Utility */,
 				EB5FDD1F12D2FE5400B34D5A /* Aiff.h */,
 				EB5FDD2012D2FE5400B34D5A /* Aiff.mm */,
 				EB5FDD2112D2FE5400B34D5A /* ieee.c */,
@@ -133,11 +135,6 @@
 				EBB1B78112BB385A00E07FD0 /* AUProcessor.h */,
 				EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
-				EBF5D61712C5A85E00AD3C6C /* RUtil.rb */,
-				EBD0F6B412D5BF1A00CF6B7B /* util.h */,
-				EBD0F6B512D5BF1A00CF6B7B /* util.mm */,
-				EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */,
-				EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -221,6 +218,25 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EB423EE912D5D89F009069BF /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				EBD0F6B512D5BF1A00CF6B7B /* util.mm */,
+				EBD0F6B412D5BF1A00CF6B7B /* util.h */,
+				EBF5D61712C5A85E00AD3C6C /* RUtil.rb */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		EB423EEB12D5D8B2009069BF /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
+				EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */,
+				EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */,
+			);
+			name = Legacy;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

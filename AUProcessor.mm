@@ -378,17 +378,14 @@ NSString *EnumToFOURCC(UInt32 val){
 	}
 	gCount++;
 	
+	UInt32 channels = ioData->mBuffers[0].mNumberChannels;
 	UInt32 sampleNum = inNumberFrames;	//in my case
-	SInt16 *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
+	void *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
 	
-	
-	for(UInt32 i = 0; i< sampleNum; i++){
-		int index =  i*2;
-		SInt16 sample = 0;//gSinGenerator.gen2();
-		pBuffer[index] = sample;
-		pBuffer[index+1] = sample;
-	}
-	
+	[m_aiff renderToBuffer:channels
+			   sampleCount:sampleNum
+					  data:pBuffer];
+
 	return noErr;
 }
 

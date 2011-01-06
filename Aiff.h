@@ -14,11 +14,15 @@
 	unsigned long _sampleCount;
 	NSString *_fileName;
 	std::vector<signed short> _stlbuffer;
+	
+	unsigned long _currentFrame;
 }
 
 - (void) loadFile: (NSString *)fileName;
 - (NSMutableArray *)buffer;
 - (std::vector<signed short> *)stlbuffer;
 - (NSString *)fileName;
+
+- (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data;  
 
 @end	

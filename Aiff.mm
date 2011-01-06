@@ -50,6 +50,8 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"init");
 	NSLog(@"init exit");
 	_buffer_l = [[NSMutableArray alloc] init];
+	
+	_currentFrame = 0;
 	return self;
 }
 
@@ -61,10 +63,9 @@ signed short swapByteOrderShort(signed short org){
 - (void) loadFile: (NSString *)fileName{
 	NSLog(@"%@",fileName);
 	
-	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
+	_currentFrame = 0;
 	
-	//const char *aiffFile = "/Users/koji/work/AiffReader/sound_files/MilkeyWay_48k_mono.aiff";
-	//_fileName = [NSString stringWithCString:aiffFile];
+	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
 	_fileName = fileName;
 	
@@ -186,7 +187,7 @@ signed short swapByteOrderShort(signed short org){
 		}
 	
 	printf("STL Buffer array size = %lu\n", _stlbuffer.size());
-	//}
+
 	UnsignedWide endMicroSec;
 	Microseconds(&endMicroSec);
 	float startMicroSecFloat = startMicroSec.lo + startMicroSec.hi*4294967296.0; 
@@ -211,8 +212,38 @@ signed short swapByteOrderShort(signed short org){
 	return _fileName;
 }
 
+
+//break encupsulation
 - (std::vector<signed short> *)stlbuffer{
 	return &_stlbuffer;
+}
+
+//copy buffer and procees _currentFrame
+- (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data{
+	
+	//currently loop implementation
+	unsigned int written_frames = 0;
+	unsigned short *pBuffer = reinterpret_cast<unsigned short *>(data);
+	
+	while(true){
+		if (written_frames > sampleCount){
+			break;
+		}
+		
+		//loop handling
+		if (_currentFrame*2 > _stlbuffer.size()){
+			_currentFrame = 0;
+			NSLog(@"LOOP");
+		}
+		
+		pBuffer[written_frames*2] = _stlbuffer[_currentFrame*2];
+		pBuffer[written_frames*2+1] = _stlbuffer[_currentFrame*2 + 1];
+	
+		written_frames++;	
+		_currentFrame++;
+	}
+	
+	return YES;
 }
 
 @end
