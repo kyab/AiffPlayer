@@ -21,8 +21,6 @@
 - (void) setFormat;
 - (void) setCallback;
 
-- (void)setFreq:(int)freq;
-
 - (Boolean)loadAiff:(NSString *)fileName;
 
 @end

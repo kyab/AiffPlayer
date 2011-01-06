@@ -59,7 +59,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (void) loadFile: (NSString *)fileName{
-	NSLog(fileName);
+	NSLog(@"%@",fileName);
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
@@ -129,7 +129,7 @@ signed short swapByteOrderShort(signed short org){
 			fread(&sampleRateBytes, 1, 10, fp);
 			double sampleRate = ConvertFromIeeeExtended(sampleRateBytes);
 			
-			printf("%d channels, %ld bits, %.2f[Hz], %ld samples\n", channels, bitSize, sampleRate, sampleFrames);
+			printf("%d channels, %d bits, %.2f[Hz], %ld samples\n", channels, bitSize, sampleRate, sampleFrames);
 			
 			double duration = (double)sampleFrames / sampleRate;
 			printf("%.2f [seconds]\n", duration); 

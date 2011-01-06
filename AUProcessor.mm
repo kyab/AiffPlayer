@@ -11,109 +11,9 @@
 
 #import "AUProcessor.h"
 #import "MacRuby/MacRuby.h"
-
-//util
-#include <string>
-#include <typeinfo>
-
-//demangle function
-//http://d.hatena.ne.jp/hidemon/20080731/1217488497
-#include <string>
-extern "C" char *__cxa_demangle (
-								 const char *mangled_name,
-								 char *output_buffer,
-								 size_t *length,
-								 int *status);
-
-std::string demangle(const char * name) {
-    size_t len = strlen(name) + 256;
-    char output_buffer[len];
-    int status = 0;
-    return std::string(
-					   __cxa_demangle(name, output_buffer, 
-									  &len, &status));
-}
-
-
-
-//using ruby to meta
-template <typename T>
-void dump_struct(const T &t){
-	const std::type_info &type = typeid(t);
-	std::string demangled_type_name = demangle(type.name());
-	
-	NSValue *v = [NSValue valueWithPointer:&t];
-	NSString *typeName = [NSString stringWithCString:demangled_type_name.c_str() encoding:kCFStringEncodingUTF8 ];
-	id ruby_util = [[MacRuby sharedRuntime] evaluateString:@"RUtil"];
-	[ruby_util performRubySelector:@selector(dump_struct_withName:) withArguments:v,typeName,NULL];
-}
-
-//サイン波のgenerator
-class SinGenerator{
-#include <math.h>	//sin,M_PI
-	
-public:
-	SinGenerator(UInt32 freq, float gain){
-		m_currentSampleCount = 0;
-		m_freq = freq;	//Hz
-		m_gain = gain;
-		m_prevPhase = 0;
-		NSLog(@"SinGenerator::ctor(0x%.8x) constructor, freq=%u",this,m_freq);
-	}
-	
-	void reset(){
-		m_currentSampleCount = 0;
-	}
-	
-	void setFreq(UInt32 freq){
-		m_freq = freq;
-	}
-	
-	void setGain(float gain){
-		if (gain > 1.0) gain = 1.0;
-		if (gain < 0.0) gain = 0.0;
-		m_gain = gain;
-	}
-	
-	//generate one sample (assume freq never change)
-	/*
-	SInt16 gen(){
-		double current_sec = (double)m_currentSampleCount/44100;
-		
-		//角速度 = rad/s
-		double rspeed = m_freq*2*M_PI;
-		
-		//val = 角速度×時間
-		float val = (float)m_gain*SHRT_MAX *sin(rspeed*current_sec);
-						
-		m_currentSampleCount++;
-		//printf("%lf\n",val);
-		return (SInt16)val ;
-	}*/
-	
-	//support dynamic freq change
-	SInt16 gen2(){
-		
-		double rspeed = m_freq*2*M_PI;
-		
-		double rad = m_prevPhase + rspeed*1/44100; 
-		float val = (float)m_gain*SHRT_MAX * sin(rad);
-		m_prevPhase = rad;
-		
-		m_currentSampleCount++;
-		return (SInt16)val;										
-	}
-	
-private:
-	UInt32 m_currentSampleCount;
-	UInt32 m_freq;	//440Hz
-	float m_gain;
-	
-	double m_prevPhase;	//[rad]
-};
+#include "util.h"
 
 AudioUnit gOutputUnit;
-SinGenerator gSinGenerator(440,0.1);
 
 int gCount = 0;
 OSStatus MyRender( void                        *inRefCon,
@@ -148,7 +48,7 @@ OSStatus MyRender( void                        *inRefCon,
 	
 	for(UInt32 i = 0; i< sampleNum; i++){
 		int index =  i*2;
-		SInt16 sample = gSinGenerator.gen2();
+		SInt16 sample = 0;//gSinGenerator.gen2();
 		pBuffer[index] = sample;
 		pBuffer[index+1] = sample;
 	}
@@ -204,7 +104,7 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 	UInt32 propSize;
 	result = AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices,&propSize,NULL);
 
-	printf("propSize = %d\n", propSize);
+	printf("propSize = %u\n", (unsigned int)propSize);
 	if (FAILED(result)){
 		printf("failed to get device list = %d\n", result);
 		return;
@@ -257,9 +157,9 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 					continue;
 				}
 				
-				printf("\t%d buffer found\n", current->mNumberBuffers);
+				printf("\t%u buffer found\n", (unsigned int)current->mNumberBuffers);
 				for (int i = 0; i < current->mNumberBuffers; i++){
-					printf("\t\t %d channels\n", current->mBuffers[i].mNumberChannels);
+					printf("\t\t %u channels\n", (unsigned int)current->mBuffers[i].mNumberChannels);
 				}
 
 				point += sizeof(AudioBufferList) + sizeof(AudioBuffer) * (current->mNumberBuffers - 1);
@@ -373,7 +273,7 @@ NSString *EnumToFOURCC(UInt32 val){
 											   &size,
 											   &outWritable);
 	if (result == noErr){
-		printf("size = %u\n", size);
+		printf("size = %u\n", (unsigned int)size);
 		if (outWritable == YES){
 			printf("writable\n");
 		}else{
@@ -418,7 +318,7 @@ NSString *EnumToFOURCC(UInt32 val){
 								  sizeof(streamDescription));
 	
 	if (FAILED(result)){
-		printf("!failed to set format err= %d\n",result);
+		printf("!failed to set format err= %d\n",(int)result);
 		return;
 	}
 	
@@ -449,9 +349,6 @@ NSString *EnumToFOURCC(UInt32 val){
 		
 }
 
-- (void)setFreq:(int)freq{
-	gSinGenerator.setFreq(freq);
-}
 
 - (Boolean)loadAiff:(NSString *)fileName{
 	[m_aiff loadFile:fileName];
