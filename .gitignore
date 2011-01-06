@@ -5,6 +5,7 @@ build/
 *.pbxuser
 *.perspective
 *.perspectivev3
+*.mode1v3
 
 #Subversion
 .svn/
