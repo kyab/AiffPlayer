@@ -212,6 +212,13 @@ signed short swapByteOrderShort(signed short org){
 	return _fileName;
 }
 
+- (unsigned long) currentFrame{
+	return _currentFrame;
+}
+
+- (unsigned long) totalFrameCount{
+	return _stlbuffer.size() / 2;
+}
 
 //break encupsulation
 - (std::vector<signed short> *)stlbuffer{

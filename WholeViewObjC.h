@@ -12,10 +12,11 @@
 @interface WholeViewObjC : NSView {
 	Aiff *_aiff;
 	NSBezierPath *_wavepath;
+	NSBezierPath *_wavepath_transformed;
+	NSRect _prevBounds;
 }
 
 -(void)setAiff:(Aiff *)aiff;
--(id)aiff;
 -(void)recreateWavePath;
-
+-(void)recreateWavePath_transformed;
 @end

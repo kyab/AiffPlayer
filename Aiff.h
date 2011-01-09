@@ -23,6 +23,9 @@
 - (std::vector<signed short> *)stlbuffer;
 - (NSString *)fileName;
 
+- (unsigned long) currentFrame;
+- (unsigned long) totalFrameCount;
+
 - (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data;  
 
 @end	

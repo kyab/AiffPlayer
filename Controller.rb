@@ -8,6 +8,8 @@ framework "CoreAudio"
 
 class Controller
 	attr_accessor :label_freq,:slider_freq,:wave_view;
+	attr_accessor :start_btn, :stop_btn;
+	attr_accessor :state;
 	def awakeFromNib()
 		NSLog("Controller.rb awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
@@ -21,27 +23,46 @@ class Controller
 	
 	def initCoreAudio(sender)
 		@auProcessor.initCoreAudio
+		@start_btn.enabled= true;
 	
 	end
 	
 	def start(sender)
 		@auProcessor.start
+		@start_btn.enabled = false
+		@stop_btn.enabled = true;
+		@state = :play
 	end
 	
 	def stop(sender)
 		#puts "Controller.stop"
 		@auProcessor.stop
+		@stop_btn.enabled = false
+		@start_btn.enabled = true
+		@state = :stop
 	end
 	
 	def loadAiff(sender)
 		puts "load Aiff"
 		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
 		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
-		#@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange.aif");
-		@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange_short.aif");
+		@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange.aif");
+		#@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange_short.aif");
 		@wave_view.setAiff(@auProcessor.aiff)
+		
+		#set the timer
+		NSTimer.scheduledTimerWithTimeInterval(0.1, 
+									target:self,
+									selector: 'ontimer:',
+									userInfo:nil,
+									repeats:true)
 	end
 	
+	def ontimer(timer)
+		#redraw
+		return if @state != :play
+		@wave_view.needsDisplay = true;
+	end
 	
 	def listOutputDevices(sender)
 		@auProcessor.listOutputDevices
