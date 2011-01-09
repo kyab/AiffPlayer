@@ -7,14 +7,12 @@
 framework "CoreAudio"
 
 class Controller
-	attr_accessor :label_freq,:slider_freq
+	attr_accessor :label_freq,:slider_freq,:wave_view;
 	def awakeFromNib()
 		NSLog("Controller.rb awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
 		
 		@auProcessor = AUProcessor.new
-		#NSApp.delegate = self
-		puts "#{NSApp.delegate }"
 	end
 	
 	def hello(sender)
@@ -38,7 +36,10 @@ class Controller
 	def loadAiff(sender)
 		puts "load Aiff"
 		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
-		@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
+		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
+		#@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange.aif");
+		@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange_short.aif");
+		@wave_view.setAiff(@auProcessor.aiff)
 	end
 	
 	

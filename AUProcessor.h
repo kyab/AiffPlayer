@@ -26,6 +26,7 @@
 
 
 - (Boolean)loadAiff:(NSString *)fileName;
+- (Aiff *)aiff;
 
 
 - (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:

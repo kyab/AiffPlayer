@@ -52,6 +52,7 @@
 		EB1AFD0A12C53D16007C2648 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1AFD0912C53D16007C2648 /* JavaScriptCore.framework */; };
 		EB5FDD2312D2FE5400B34D5A /* Aiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB5FDD2012D2FE5400B34D5A /* Aiff.mm */; };
 		EB5FDD2412D2FE5400B34D5A /* ieee.c in Sources */ = {isa = PBXBuildFile; fileRef = EB5FDD2112D2FE5400B34D5A /* ieee.c */; };
+		EB90B1CC12DA34EC00A44013 /* WholeViewObjC.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */; };
 		EB93A5AF12C34CBD0053A09C /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB93A5AE12C34CBD0053A09C /* CoreAudioKit.framework */; };
 		EB93A5CC12C34D530053A09C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB93A5CB12C34D530053A09C /* CoreAudio.framework */; };
 		EBB1B75E12BB368300E07FD0 /* Controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBB1B75D12BB368300E07FD0 /* Controller.rb */; };
@@ -93,6 +94,8 @@
 		EB5FDD2012D2FE5400B34D5A /* Aiff.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Aiff.mm; sourceTree = "<group>"; };
 		EB5FDD2112D2FE5400B34D5A /* ieee.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ieee.c; sourceTree = "<group>"; };
 		EB5FDD2212D2FE5400B34D5A /* ieee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ieee.h; sourceTree = "<group>"; };
+		EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WholeViewObjC.h; sourceTree = "<group>"; };
+		EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WholeViewObjC.mm; sourceTree = "<group>"; };
 		EB93A5AE12C34CBD0053A09C /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
 		EB93A5CB12C34D530053A09C /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		EBB1B75D12BB368300E07FD0 /* Controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Controller.rb; sourceTree = "<group>"; };
@@ -126,6 +129,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */,
+				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
 				EB423EEB12D5D8B2009069BF /* Legacy */,
 				EB423EE912D5D89F009069BF /* Utility */,
 				EB5FDD1F12D2FE5400B34D5A /* Aiff.h */,
@@ -356,6 +361,7 @@
 				EB5FDD2412D2FE5400B34D5A /* ieee.c in Sources */,
 				EBD0F6B612D5BF1A00CF6B7B /* util.mm in Sources */,
 				EBD0F6BB12D5C02000CF6B7B /* SinGenerator.mm in Sources */,
+				EB90B1CC12DA34EC00A44013 /* WholeViewObjC.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

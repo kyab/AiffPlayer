@@ -57,6 +57,8 @@ OSStatus MyRender( void                        *inRefCon,
 	 
 	return noErr;
 	 */
+	
+	//calling back to AUProcessor::renderCallback
 	AUProcessor *processor = (AUProcessor *)inRefCon;
 	return [processor renderCallback:ioActionFlags :inTimeStamp :inBusNumber :inNumberFrames :ioData];
 
@@ -99,6 +101,9 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 	return self;
 }
 
+- (Aiff *)aiff{
+	return m_aiff;
+}
 
 - (void) listOutputDevices{
 	
@@ -388,7 +393,5 @@ NSString *EnumToFOURCC(UInt32 val){
 
 	return noErr;
 }
-
-
 
 @end
