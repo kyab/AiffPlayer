@@ -18,5 +18,7 @@
 
 -(void)setAiff:(Aiff *)aiff;
 -(void)recreateWavePath;
+-(void)recreateWavePath2;
 -(void)recreateWavePath_transformed;
+-(void)piriodicUpdate;
 @end

@@ -46,12 +46,13 @@ class Controller
 		puts "load Aiff"
 		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
 		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
-		@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange.aif");
-		#@auProcessor.loadAiff("/Users/koji/Desktop/kaera_orange_short.aif");
+		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
+		@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
+		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
 		@wave_view.setAiff(@auProcessor.aiff)
 		
 		#set the timer
-		NSTimer.scheduledTimerWithTimeInterval(0.1, 
+		NSTimer.scheduledTimerWithTimeInterval(0.01, 
 									target:self,
 									selector: 'ontimer:',
 									userInfo:nil,
@@ -61,7 +62,7 @@ class Controller
 	def ontimer(timer)
 		#redraw
 		return if @state != :play
-		@wave_view.needsDisplay = true;
+		@wave_view.piriodicUpdate
 	end
 	
 	def listOutputDevices(sender)
