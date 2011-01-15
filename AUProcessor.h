@@ -11,6 +11,8 @@
 
 #include <vector>
 
+//The Application Main Model
+
 @interface AUProcessor : NSObject {
 	Aiff *m_aiff;
 }

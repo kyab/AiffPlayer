@@ -57,6 +57,7 @@
 		EB93A5CC12C34D530053A09C /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB93A5CB12C34D530053A09C /* CoreAudio.framework */; };
 		EBB1B75E12BB368300E07FD0 /* Controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBB1B75D12BB368300E07FD0 /* Controller.rb */; };
 		EBB1B78312BB385A00E07FD0 /* AUProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */; };
+		EBB6F8DD12E20CAA00DE75FB /* MainView.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBB6F8DC12E20CAA00DE75FB /* MainView.rb */; };
 		EBD0F6B612D5BF1A00CF6B7B /* util.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6B512D5BF1A00CF6B7B /* util.mm */; };
 		EBD0F6BB12D5C02000CF6B7B /* SinGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */; };
 		EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBF5D61712C5A85E00AD3C6C /* RUtil.rb */; };
@@ -101,6 +102,7 @@
 		EBB1B75D12BB368300E07FD0 /* Controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Controller.rb; sourceTree = "<group>"; };
 		EBB1B78112BB385A00E07FD0 /* AUProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AUProcessor.h; sourceTree = "<group>"; };
 		EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AUProcessor.mm; sourceTree = "<group>"; };
+		EBB6F8DC12E20CAA00DE75FB /* MainView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = MainView.rb; sourceTree = "<group>"; };
 		EBD0F6B412D5BF1A00CF6B7B /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		EBD0F6B512D5BF1A00CF6B7B /* util.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = util.mm; sourceTree = "<group>"; };
 		EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinGenerator.h; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				EBB1B78112BB385A00E07FD0 /* AUProcessor.h */,
 				EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
+				EBB6F8DC12E20CAA00DE75FB /* MainView.rb */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 				2BFA9DA710CDF852007972A1 /* MainMenu.xib in Resources */,
 				EBB1B75E12BB368300E07FD0 /* Controller.rb in Resources */,
 				EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */,
+				EBB6F8DD12E20CAA00DE75FB /* MainView.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

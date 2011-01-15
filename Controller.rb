@@ -7,9 +7,10 @@
 framework "CoreAudio"
 
 class Controller
-	attr_accessor :label_freq,:slider_freq,:wave_view;
+	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename;
 	attr_accessor :start_btn, :stop_btn;
 	attr_accessor :state;
+	
 	def awakeFromNib()
 		NSLog("Controller.rb awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
@@ -42,14 +43,10 @@ class Controller
 		@state = :stop
 	end
 	
-	def loadAiff(sender)
-		puts "load Aiff"
-		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
-		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
-		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
-		@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
-		#@auProcessor.loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
-		@wave_view.setAiff(@auProcessor.aiff)
+	def loadAiff(file)
+		@auProcessor.loadAiff(file)
+		
+		@label_filename.stringValue = file
 		
 		#set the timer
 		NSTimer.scheduledTimerWithTimeInterval(0.01, 
@@ -57,6 +54,21 @@ class Controller
 									selector: 'ontimer:',
 									userInfo:nil,
 									repeats:true)
+									
+		@wave_view.setAiff(@auProcessor.aiff)
+		
+	end
+	
+	def load(sender)
+
+		#loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
+		loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
+		
+		
+
 	end
 	
 	def ontimer(timer)

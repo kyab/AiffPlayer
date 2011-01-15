@@ -64,6 +64,8 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"%@",fileName);
 	
 	_currentFrame = 0;
+	_sampleCount = 0;
+	_stlbuffer.clear();
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
