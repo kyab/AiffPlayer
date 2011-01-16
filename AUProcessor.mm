@@ -362,6 +362,10 @@ NSString *EnumToFOURCC(UInt32 val){
 	return YES;
 }
 
+- (void) setUselowpass:(Boolean) b;{
+	[m_aiff setUseLowpass:b];
+}
+
 - (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
 (UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData{
 	//NSLog(@"MyRender");

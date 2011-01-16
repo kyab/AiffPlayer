@@ -7,7 +7,7 @@
 framework "CoreAudio"
 
 class Controller
-	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename;
+	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename, :check_lowpass;
 	attr_accessor :start_btn, :stop_btn;
 	attr_accessor :state;
 	
@@ -44,6 +44,7 @@ class Controller
 	end
 	
 	def loadAiff(file)
+		@check_lowpass.state = NSOffState
 		@auProcessor.loadAiff(file)
 		
 		@label_filename.stringValue = file
@@ -75,6 +76,17 @@ class Controller
 		#redraw
 		return if @state != :play
 		@wave_view.piriodicUpdate
+	end
+	
+	def lowpass(sender)
+		p sender.state
+		if (sender.state == NSOnState)
+			@auProcessor.setUselowpass(true)
+		else
+			@auProcessor.setUselowpass(false)
+		end
+
+		@wave_view.forceRedraw();
 	end
 	
 	def listOutputDevices(sender)

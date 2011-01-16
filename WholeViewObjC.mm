@@ -40,9 +40,14 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	//[self recreateWavePath];
 	//[self recreateWavePath_transformed];
 	[self recreateWavePath2];
-	[self setNeedsDisplay:TRUE];
+	[self setNeedsDisplay:YES];
 	
 	
+}
+
+-(void)forceRedraw{
+	[self recreateWavePath2];
+	[self setNeedsDisplay:YES];
 }
 
 //現在の再生時刻を参考に、部分再描画を行う。

@@ -943,11 +943,38 @@
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
 									<string key="NSColorName">controlTextColor</string>
-									<object class="NSColor" key="NSColor">
+									<object class="NSColor" key="NSColor" id="409061092">
 										<int key="NSColorSpace">3</int>
 										<bytes key="NSWhite">MAA</bytes>
 									</object>
 								</object>
+							</object>
+						</object>
+						<object class="NSButton" id="254382634">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{192, 497}, {76, 32}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="279872831">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">0</int>
+								<string key="NSContents">Lowpass</string>
+								<reference key="NSSupport" ref="573764678"/>
+								<reference key="NSControlView" ref="254382634"/>
+								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags2">2</int>
+								<object class="NSCustomResource" key="NSNormalImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">NSSwitch</string>
+								</object>
+								<object class="NSButtonImageSource" key="NSAlternateImage">
+									<string key="NSImageName">NSSwitch</string>
+								</object>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
 					</object>
@@ -1371,6 +1398,22 @@
 						<reference key="destination" ref="178073419"/>
 					</object>
 					<int key="connectionID">422</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">lowpass:</string>
+						<reference key="source" ref="154294876"/>
+						<reference key="destination" ref="254382634"/>
+					</object>
+					<int key="connectionID">428</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">check_lowpass</string>
+						<reference key="source" ref="154294876"/>
+						<reference key="destination" ref="254382634"/>
+					</object>
+					<int key="connectionID">429</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1997,6 +2040,7 @@
 							<reference ref="598428754"/>
 							<reference ref="782439168"/>
 							<reference ref="178073419"/>
+							<reference ref="254382634"/>
 						</object>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -2117,6 +2161,20 @@
 						<int key="objectID">420</int>
 						<reference key="object" ref="598547391"/>
 						<reference key="parent" ref="178073419"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">426</int>
+						<reference key="object" ref="254382634"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="279872831"/>
+						</object>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">427</int>
+						<reference key="object" ref="279872831"/>
+						<reference key="parent" ref="254382634"/>
 					</object>
 				</object>
 			</object>
@@ -2289,6 +2347,13 @@
 					<string>413.IBPluginDependency</string>
 					<string>419.IBPluginDependency</string>
 					<string>420.IBPluginDependency</string>
+					<string>426.IBPluginDependency</string>
+					<string>426.IBViewBoundsToFrameTransform</string>
+					<string>426.IBViewIntegration.shadowBlurRadius</string>
+					<string>426.IBViewIntegration.shadowColor</string>
+					<string>426.IBViewIntegration.shadowOffsetHeight</string>
+					<string>426.IBViewIntegration.shadowOffsetWidth</string>
+					<string>427.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.ImportedFromIB2</string>
 					<string>56.IBPluginDependency</string>
@@ -2462,9 +2527,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{75, 191}, {554, 641}}</string>
+					<string>{{240, 208}, {554, 641}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{75, 191}, {554, 641}}</string>
+					<string>{{240, 208}, {554, 641}}</string>
 					<integer value="1"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<string>MainView</string>
@@ -2501,6 +2566,15 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSAffineTransform">
+						<bytes key="NSTransformStruct">P4AAAL+AAABDQAAAxAIAAA</bytes>
+					</object>
+					<real value="0.0"/>
+					<reference ref="409061092"/>
+					<real value="0.0"/>
+					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
@@ -2555,7 +2629,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">422</int>
+			<int key="maxID">429</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2574,11 +2648,13 @@
 							<string>listOutputDevices:</string>
 							<string>listOutputDevices_ruby:</string>
 							<string>load:</string>
+							<string>lowpass:</string>
 							<string>start:</string>
 							<string>stop:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2601,6 +2677,7 @@
 							<string>listOutputDevices:</string>
 							<string>listOutputDevices_ruby:</string>
 							<string>load:</string>
+							<string>lowpass:</string>
 							<string>start:</string>
 							<string>stop:</string>
 						</object>
@@ -2635,6 +2712,10 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">lowpass:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">start:</string>
 								<string key="candidateClassName">id</string>
 							</object>
@@ -2648,6 +2729,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>check_lowpass</string>
 							<string>label_filename</string>
 							<string>label_freq</string>
 							<string>slider_freq</string>
@@ -2658,6 +2740,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2671,6 +2754,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>check_lowpass</string>
 							<string>label_filename</string>
 							<string>label_freq</string>
 							<string>slider_freq</string>
@@ -2681,6 +2765,10 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">check_lowpass</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">label_filename</string>
 								<string key="candidateClassName">id</string>
@@ -3396,11 +3484,13 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
+				<string>NSSwitch</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
+				<string>{15, 15}</string>
 			</object>
 		</object>
 	</data>

@@ -14,12 +14,15 @@
 	unsigned long _sampleCount;
 	NSString *_fileName;
 	std::vector<signed short> _stlbuffer;
-	
+	std::vector<signed short> _stlbuffer_lowpassed;
+	Boolean _useLowPass;
 	unsigned long _currentFrame;
 }
 
 - (void) loadFile: (NSString *)fileName;
 - (NSMutableArray *)buffer;
+- (void)lowpass;
+- (void)setUseLowpass: (Boolean)useOrNotUse;
 - (std::vector<signed short> *)stlbuffer;
 - (NSString *)fileName;
 

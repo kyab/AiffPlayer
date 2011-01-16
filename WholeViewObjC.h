@@ -21,4 +21,5 @@
 -(void)recreateWavePath2;
 -(void)recreateWavePath_transformed;
 -(void)piriodicUpdate;
+-(void)forceRedraw;
 @end

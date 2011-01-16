@@ -30,6 +30,7 @@
 - (Boolean)loadAiff:(NSString *)fileName;
 - (Aiff *)aiff;
 
+- (void) setUselowpass:(Boolean) b;
 
 - (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
 (UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData;

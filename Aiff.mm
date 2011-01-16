@@ -52,6 +52,7 @@ signed short swapByteOrderShort(signed short org){
 	_buffer_l = [[NSMutableArray alloc] init];
 	
 	_currentFrame = 0;
+	_useLowPass = false;
 	return self;
 }
 
@@ -66,6 +67,8 @@ signed short swapByteOrderShort(signed short org){
 	_currentFrame = 0;
 	_sampleCount = 0;
 	_stlbuffer.clear();
+	_stlbuffer_lowpassed.clear();
+	_useLowPass = false;
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
@@ -224,13 +227,45 @@ signed short swapByteOrderShort(signed short org){
 
 //break encupsulation
 - (std::vector<signed short> *)stlbuffer{
-	return &_stlbuffer;
+	return _useLowPass ? &_stlbuffer_lowpassed : &_stlbuffer;
 }
+
+- (void)setUseLowpass:(Boolean)useOrNotUse{
+	_useLowPass = useOrNotUse;
+	if (_useLowPass){
+		if (_stlbuffer_lowpassed.size() == 0){
+			[self lowpass];
+		}
+	}
+}
+
+//create simple lowpassed samples.
+- (void)lowpass{
+	_stlbuffer_lowpassed.clear();
+	
+	//super simple lowpass filter
+	for(UInt32 frame = 0; frame < _stlbuffer.size()/2; frame++){
+		//left
+		UInt32 prev_frame = 0;
+		if (frame >5) {prev_frame = frame-5;}
+		
+		float sample_l = _stlbuffer[frame*2]*0.5 + _stlbuffer[prev_frame*2]*0.5;
+		float sample_r = _stlbuffer[frame*2+1]*0.5 + _stlbuffer[prev_frame*2+1]*0.5;
+		
+		_stlbuffer_lowpassed.push_back((signed short) (sample_l));
+		_stlbuffer_lowpassed.push_back((signed short) (sample_r));
+	}
+	NSLog(@"LOWPASS sample created");
+}
+	
+
 
 //copy buffer and procees _currentFrame
 - (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data{
+
+	std::vector<signed short> &stlbuffer = _useLowPass ? _stlbuffer_lowpassed : _stlbuffer; 
 	
-	//currently loop implementation
+	//currently loop playback
 	unsigned int written_frames = 0;
 	unsigned short *pBuffer = reinterpret_cast<unsigned short *>(data);
 	
@@ -240,13 +275,13 @@ signed short swapByteOrderShort(signed short org){
 		}
 		
 		//loop handling
-		if (_currentFrame*2 > _stlbuffer.size()){
+		if (_currentFrame*2 > stlbuffer.size()){
 			_currentFrame = 0;
 			NSLog(@"LOOP");
 		}
 		
-		pBuffer[written_frames*2] = _stlbuffer[_currentFrame*2];
-		pBuffer[written_frames*2+1] = _stlbuffer[_currentFrame*2 + 1];
+		pBuffer[written_frames*2] = stlbuffer[_currentFrame*2];
+		pBuffer[written_frames*2+1] = stlbuffer[_currentFrame*2 + 1];
 	
 		written_frames++;	
 		_currentFrame++;
