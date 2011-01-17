@@ -17,6 +17,8 @@
 	std::vector<signed short> _stlbuffer_lowpassed;
 	Boolean _useLowPass;
 	unsigned long _currentFrame;
+	unsigned long _scribStartFrame;
+	Boolean _scrib;
 }
 
 - (void) loadFile: (NSString *)fileName;
@@ -26,7 +28,13 @@
 - (std::vector<signed short> *)stlbuffer;
 - (NSString *)fileName;
 
+- (Boolean)scrib;
+- (void) setScrib: (Boolean)b;
+
+
 - (unsigned long) currentFrame;
+- (void) setCurrentFrameInRate: (float) rate scribStart:(Boolean)scribStart ;
+
 - (unsigned long) totalFrameCount;
 
 - (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data;  

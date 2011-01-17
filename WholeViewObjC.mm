@@ -92,11 +92,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 }
 
-//scrib
 
 -(void)recreateWavePath2{
 	
-	//[_wavepath release];
+	[_wavepath release];
 	_wavepath =  [[NSBezierPath bezierPath] retain];
 	
 	NSRect bounds = [self bounds];
@@ -227,13 +226,35 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 
 - (void)mouseDown:(NSEvent *)theEvent{
 	NSLog(@"mouse down. click count = %d", [theEvent clickCount]);
-
-	[super mouseDown:theEvent];
+	
+	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	NSLog(@"scrib start(%f,%f)", curPoint.x, curPoint.y);
+	if (_aiff){
+		[_aiff setCurrentFrameInRate:(curPoint.x)/([self bounds].size.width) scribStart:YES];
+	}
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
 	NSLog(@"mouse up");
-	[super mouseUp:theEvent];
+	//[super mouseUp:theEvent];
+	if (_aiff){
+		[_aiff setScrib:NO];
+	}
+	NSLog(@"Scrib end");
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent{
+	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	//NSLog(@"drag(%f,%f)", curPoint.x, curPoint.y);
+	if (NSPointInRect(curPoint, [self bounds])){
+		[_aiff setCurrentFrameInRate:(curPoint.x)/([self bounds].size.width) scribStart:YES];
+	}
+}
+
+/*needs setAcceptsMouseMovedEvents for window*/
+- (void)mouseMoved:(NSEvent *)theEvent{
+	//needs setAcceptsMouseMovedEvents:
+	NSLog(@"mouse moved");
 }
 
 

@@ -48,11 +48,11 @@ signed short swapByteOrderShort(signed short org){
 
 - (id) init{
 	NSLog(@"init");
-	NSLog(@"init exit");
 	_buffer_l = [[NSMutableArray alloc] init];
 	
 	_currentFrame = 0;
 	_useLowPass = false;
+	_scrib = NO;
 	return self;
 }
 
@@ -65,6 +65,7 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"%@",fileName);
 	
 	_currentFrame = 0;
+	_scribStartFrame = 0;
 	_sampleCount = 0;
 	_stlbuffer.clear();
 	_stlbuffer_lowpassed.clear();
@@ -184,10 +185,6 @@ signed short swapByteOrderShort(signed short org){
 		printf("sampleFrames = %ld\n", sampleFrames);
 		for (int i = 0; i < sampleFrames*channels ; i++){
 
-			//signed short sample = swapByteOrderShort(samples[i]);
-			//signed short sample = samples[i];
-			//[_buffer_l addObject:
-			//	[NSNumber numberWithShort:sample]];
 			_stlbuffer.push_back(swapByteOrderShort(samples[i]));
 		}
 	
@@ -221,9 +218,37 @@ signed short swapByteOrderShort(signed short org){
 	return _currentFrame;
 }
 
+- (void) setCurrentFrameInRate: (float) rate scribStart:(Boolean)scribStart{
+	if (_stlbuffer.size() == 0){
+		NSLog(@"aiff is empty now");
+		return;
+	}
+	_currentFrame = (unsigned long)([self totalFrameCount] * rate);
+	if(scribStart){
+		[self setScrib:YES];
+		_scribStartFrame = _currentFrame;
+	}
+	
+	NSLog(@"current frame changed to %u", _currentFrame);
+}
+
 - (unsigned long) totalFrameCount{
 	return _stlbuffer.size() / 2;
 }
+
+- (Boolean)scrib{
+	return _scrib;
+}
+- (void) setScrib: (Boolean)b{
+	if (b){
+		NSLog(@"scribbing on in Aiff");
+	}else{
+		NSLog(@"scribbing off in Aiff");
+	}
+	_scrib = b;
+}
+
+
 
 //break encupsulation
 - (std::vector<signed short> *)stlbuffer{
@@ -245,7 +270,7 @@ signed short swapByteOrderShort(signed short org){
 	
 	//super simple lowpass filter
 	for(UInt32 frame = 0; frame < _stlbuffer.size()/2; frame++){
-		//left
+
 		UInt32 prev_frame = 0;
 		if (frame >10) {prev_frame = frame-10;}
 		
@@ -272,6 +297,15 @@ signed short swapByteOrderShort(signed short org){
 	while(true){
 		if (written_frames > sampleCount){
 			break;
+		}
+		
+		if(_scrib){
+			const unsigned int SCRIB_INTERVAL_SAMPLE = 4100;//0.1sec
+			if ((_currentFrame - _scribStartFrame) > SCRIB_INTERVAL_SAMPLE){
+				_currentFrame = _scribStartFrame;
+			}else if(_currentFrame > [self totalFrameCount]){
+				_currentFrame = _scribStartFrame;
+			}
 		}
 		
 		//loop handling

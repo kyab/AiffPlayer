@@ -69,10 +69,10 @@ class Controller
 	
 	def load(sender)
 
-		#loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
+		loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
-		loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
 		
 		
