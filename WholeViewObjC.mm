@@ -92,6 +92,8 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 }
 
+//scrib
+
 -(void)recreateWavePath2{
 	
 	//[_wavepath release];
