@@ -376,6 +376,10 @@ NSString *EnumToFOURCC(UInt32 val){
 	
 	//http://www.cocoabuilder.com/archive/cocoa/294771-thread-not-registered-mystery-under-gc.html
 	objc_start_collector_thread();	//no effect??
+	//objc_registerThreadWithCollector();// not in 10.5SDK(10.6SDK only)
+	
+	[NSThread currentThread];	//seems does not work as GC Programming Guide says.????
+	//http://osdir.com/ml/cocoa-dev/2009-09/msg00672.html OK, don't care about auto_zone_thread_registration_error() in log.
 	
 	if ((gCount % 100) == 0){
 		
