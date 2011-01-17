@@ -247,7 +247,7 @@ signed short swapByteOrderShort(signed short org){
 	for(UInt32 frame = 0; frame < _stlbuffer.size()/2; frame++){
 		//left
 		UInt32 prev_frame = 0;
-		if (frame >5) {prev_frame = frame-5;}
+		if (frame >10) {prev_frame = frame-10;}
 		
 		float sample_l = _stlbuffer[frame*2]*0.5 + _stlbuffer[prev_frame*2]*0.5;
 		float sample_r = _stlbuffer[frame*2+1]*0.5 + _stlbuffer[prev_frame*2+1]*0.5;

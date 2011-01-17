@@ -15,6 +15,13 @@ class Controller
 		NSLog("Controller.rb awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
 		
+		gc = NSGarbageCollector.defaultCollector()
+		if (gc)
+			NSLog("gc enabled")
+		else
+			NSLog("gc disabled")
+		end
+		
 		@auProcessor = AUProcessor.new
 	end
 	

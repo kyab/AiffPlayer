@@ -75,7 +75,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 -(void)recreateWavePath{
 	
 	[_wavepath release];
-	_wavepath = [NSBezierPath bezierPath];
+	_wavepath =  [[NSBezierPath bezierPath] retain];
 	
 	[_wavepath setLineWidth:1];
 	
@@ -95,7 +95,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 -(void)recreateWavePath2{
 	
 	[_wavepath release];
-	_wavepath = [NSBezierPath bezierPath];
+	_wavepath =  [[NSBezierPath bezierPath] retain];
 	
 	NSRect bounds = [self bounds];
 	
@@ -215,5 +215,24 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 	NSRectFill(NSMakeRect(x,0,1,[self bounds].size.height));	
 }
+
+//set the cursor
+- (void)resetCursorRects{
+	NSRect rect = [self bounds];
+	NSCursor *cursor = [NSCursor IBeamCursor];
+	[self addCursorRect:rect cursor:cursor];
+}
+
+- (void)mouseDown:(NSEvent *)theEvent{
+	NSLog(@"mouse down. click count = %d", [theEvent clickCount]);
+
+	[super mouseDown:theEvent];
+}
+
+- (void)mouseUp:(NSEvent *)theEvent{
+	NSLog(@"mouse up");
+	[super mouseUp:theEvent];
+}
+
 
 @end

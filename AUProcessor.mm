@@ -13,6 +13,8 @@
 #import "MacRuby/MacRuby.h"
 #include "util.h"
 
+#include <objc/objc-auto.h>
+
 AudioUnit gOutputUnit;
 
 int gCount = 0;
@@ -366,10 +368,17 @@ NSString *EnumToFOURCC(UInt32 val){
 	[m_aiff setUseLowpass:b];
 }
 
+
+
 - (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
 (UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData{
 	//NSLog(@"MyRender");
+	
+	//http://www.cocoabuilder.com/archive/cocoa/294771-thread-not-registered-mystery-under-gc.html
+	objc_start_collector_thread();	//no effect??
+	
 	if ((gCount % 100) == 0){
+		
 		NSLog(@"MyRender," 
 			  "%f bus number = %u, frames = %u,"
 			  "ratescalar = %u", 
@@ -384,6 +393,7 @@ NSString *EnumToFOURCC(UInt32 val){
 			  ioData->mNumberBuffers,
 			  ioData->mBuffers[0].mNumberChannels,
 			  ioData->mBuffers[0].mDataByteSize);		//16bit,2chの場合はinNumberFrames*4
+		
 	}
 	gCount++;
 	
