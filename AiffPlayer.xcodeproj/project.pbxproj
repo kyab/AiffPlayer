@@ -137,8 +137,7 @@
 				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
 				EB423EEB12D5D8B2009069BF /* Legacy */,
 				EB423EE912D5D89F009069BF /* Utility */,
-				EB5FDD2112D2FE5400B34D5A /* ieee.c */,
-				EB5FDD2212D2FE5400B34D5A /* ieee.h */,
+				EB62FD8912F6B4BE001F1B87 /* Aiff_internal */,
 				EBB1B78112BB385A00E07FD0 /* AUProcessor.h */,
 				EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
@@ -245,6 +244,15 @@
 				EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */,
 			);
 			name = Legacy;
+			sourceTree = "<group>";
+		};
+		EB62FD8912F6B4BE001F1B87 /* Aiff_internal */ = {
+			isa = PBXGroup;
+			children = (
+				EB5FDD2212D2FE5400B34D5A /* ieee.h */,
+				EB5FDD2112D2FE5400B34D5A /* ieee.c */,
+			);
+			name = Aiff_internal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

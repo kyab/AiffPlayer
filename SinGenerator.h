@@ -71,7 +71,7 @@ public:
 	
 private:
 	UInt32 m_currentSampleCount;
-	UInt32 m_freq;	//440Hz
+	UInt32 m_freq;
 	float m_gain;
 	
 	double m_prevPhase;	//[rad]

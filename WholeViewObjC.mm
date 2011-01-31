@@ -59,7 +59,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 	float x = view_width * position_ratio;
 	
-	//少し手前から50ピクセル分横幅を描画する。
+	//部分描画する。ピクセル分横幅を描画する。
 	x = x-200;
 	float width = 400;
 	
@@ -69,9 +69,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	//[self displayRect:rectToRedraw];
 	//NSLog(@"foo");
 	
-	//だめだー、これだけだと以前の再生カーソルが消えない場合がある。
+	//だめだー、これだけだと以前の再生カーソルが消えない場合がある。レイヤー表示とか使うべきなの？
 }
 
+/*
 -(void)recreateWavePath{
 	
 	[_wavepath release];
@@ -91,7 +92,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	}
 	
 }
-
+*/
 
 -(void)recreateWavePath2{
 	
@@ -115,8 +116,9 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	float y_ratio = (1.0f / SHORT_MAX) * (bounds.size.height)/2.0f;
 	
 	float samples_per_pixel = float(samples->size()/2)/bounds.size.width;
-	//TODO このレートが小さい時は全サンプルを描画する方法に変える。
+	//TODO このレートが小さい時は全サンプルを描画する方法に変える->Oscilloscopeにて実装済み。
 	
+	//各ピクセルが占めるサンプルの最小値から最大値への縦棒
 	UInt32 sample_from = 1;
 	UInt32 sample_to = 0;
 	for (UInt32 pixel = 1; pixel < bounds.size.width ; pixel++){
@@ -149,6 +151,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 }
 
+/*
 -(void)recreateWavePath_transformed{
 	[_wavepath_transformed release];
 	
@@ -169,7 +172,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	_wavepath_transformed = [transform transformBezierPath:_wavepath];
 	NSLog(@"recreated _wavepath_transformed");
 }
-
+*/
 - (void)drawRect:(NSRect)rect {
 
 	if ([self inLiveResize]){
@@ -251,7 +254,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	}
 }
 
-/*needs setAcceptsMouseMovedEvents for window*/
+/*needs setAcceptsMouseMovedEvents for window, to receive this event*/
 - (void)mouseMoved:(NSEvent *)theEvent{
 	//needs setAcceptsMouseMovedEvents:
 	NSLog(@"mouse moved");
