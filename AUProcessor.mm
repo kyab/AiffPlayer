@@ -17,7 +17,6 @@
 
 AudioUnit gOutputUnit;
 
-int gCount = 0;
 OSStatus MyRender( void                        *inRefCon,
 				  AudioUnitRenderActionFlags  *ioActionFlags,
 				  const AudioTimeStamp        *inTimeStamp,
@@ -26,39 +25,6 @@ OSStatus MyRender( void                        *inRefCon,
 				  AudioBufferList             *ioData
 				  ){
 	
-	/*
-	//NSLog(@"MyRender");
-	if ((gCount % 100) == 0){
-		NSLog(@"MyRender," 
-			  "%f bus number = %u, frames = %u,"
-			  "ratescalar = %u", 
-			  inTimeStamp->mSampleTime, 
-			  inBusNumber, 
-			  inNumberFrames,
-			  inTimeStamp->mRateScalar);
-		
-		NSLog(@"buffer info: mNumberBuffers = %u,"
-			  "channels = %u,"
-			  "dataByteSize=%u\n", 
-			  ioData->mNumberBuffers,
-			  ioData->mBuffers[0].mNumberChannels,
-			  ioData->mBuffers[0].mDataByteSize);		//16bit,2chの場合はinNumberFrames*4
-	}
-	gCount++;
-	
-	UInt32 sampleNum = inNumberFrames;	//in my case
-	SInt16 *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
-	
-	
-	for(UInt32 i = 0; i< sampleNum; i++){
-		int index =  i*2;
-		SInt16 sample = 0;//gSinGenerator.gen2();
-		pBuffer[index] = sample;
-		pBuffer[index+1] = sample;
-	}
-	 
-	return noErr;
-	 */
 	
 	//calling back to AUProcessor::renderCallback
 	AUProcessor *processor = (AUProcessor *)inRefCon;
@@ -334,11 +300,11 @@ NSString *EnumToFOURCC(UInt32 val){
 	}
 	
 	printf("succeeded to set format\n");
-
-	//RenderSinを参考にしてコールバックの設定と再生をしてみる。	
+	
 }
 
 -(void) setCallback{
+	//RenderSinを参考に
 	
 	AURenderCallbackStruct callBackInfo;
 	callBackInfo.inputProc = MyRender;
@@ -379,9 +345,10 @@ NSString *EnumToFOURCC(UInt32 val){
 	//objc_registerThreadWithCollector();// not in 10.5SDK(10.6SDK only)
 	
 	[NSThread currentThread];	//seems does not work as GC Programming Guide says.????
-	//http://osdir.com/ml/cocoa-dev/2009-09/msg00672.html OK, don't care about auto_zone_thread_registration_error() in log.
+	//http://osdir.com/ml/cocoa-dev/2009-09/msg00672.html OK, don't care about auto_zone_thread_registration_error() in console log.
 	
-	if ((gCount % 100) == 0){
+	static UInt32 count = 0;
+	if ((count % 100) == 0){
 		
 		NSLog(@"MyRender," 
 			  "%f bus number = %u, frames = %u,"
@@ -399,7 +366,7 @@ NSString *EnumToFOURCC(UInt32 val){
 			  ioData->mBuffers[0].mDataByteSize);		//16bit,2chの場合はinNumberFrames*4
 		
 	}
-	gCount++;
+	count++;
 	
 	UInt32 channels = ioData->mBuffers[0].mNumberChannels;
 	UInt32 sampleNum = inNumberFrames;	//in my case

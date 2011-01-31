@@ -48,7 +48,7 @@ signed short swapByteOrderShort(signed short org){
 
 - (id) init{
 	NSLog(@"init");
-	_buffer_l = [[NSMutableArray alloc] init];
+	//_buffer_l = [[NSMutableArray alloc] init];
 	
 	_currentFrame = 0;
 	_useLowPass = false;
@@ -57,7 +57,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (void) dealloc{
-	[_buffer_l dealloc];
+	//[_buffer_l dealloc];
 	[super dealloc];
 }
 
@@ -206,9 +206,10 @@ signed short swapByteOrderShort(signed short org){
 	
 }
 
+/*
 - (NSMutableArray *)buffer{
 	return _buffer_l;
-}
+}*/
 
 - (NSString *)fileName{
 	return _fileName;
@@ -255,8 +256,8 @@ signed short swapByteOrderShort(signed short org){
 	return _useLowPass ? &_stlbuffer_lowpassed : &_stlbuffer;
 }
 
-- (void)setUseLowpass:(Boolean)useOrNotUse{
-	_useLowPass = useOrNotUse;
+- (void)setUseLowpass:(Boolean)useLowpass{
+	_useLowPass = useLowpass;
 	if (_useLowPass){
 		if (_stlbuffer_lowpassed.size() == 0){
 			[self lowpass];
@@ -282,12 +283,20 @@ signed short swapByteOrderShort(signed short org){
 	}
 	NSLog(@"LOWPASS sample created");
 }
-	
 
+/*
+-(std::vector<complex>)getDFTBuffer{
+	return std::vector<complex>();
+}
+
+-(std::vector<complex>)getFFTBuffer{
+	return std::vector<complex>();
+}*/
 
 //copy buffer and procees _currentFrame
 - (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data{
 
+	//use lowpassed buffer if _useLowPass
 	std::vector<signed short> &stlbuffer = _useLowPass ? _stlbuffer_lowpassed : _stlbuffer; 
 	
 	//currently loop playback
