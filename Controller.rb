@@ -11,6 +11,8 @@ class Controller
 	attr_accessor :start_btn, :stop_btn;
 	attr_accessor :state;
 	
+	attr_accessor :spectrum_view;
+	
 	def awakeFromNib()
 		NSLog("Controller.rb awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
@@ -19,7 +21,7 @@ class Controller
 		if (gc)
 			NSLog("gc enabled")
 		else
-			NSLog("gc disabled")
+			NSLog("gc disabled --- ????")
 		end
 		
 		@auProcessor = AUProcessor.new
@@ -57,32 +59,29 @@ class Controller
 		@label_filename.stringValue = file
 		
 		#set the timer
-		NSTimer.scheduledTimerWithTimeInterval(0.01, 
+		NSTimer.scheduledTimerWithTimeInterval(0.02, 
 									target:self,
 									selector: 'ontimer:',
 									userInfo:nil,
 									repeats:true)
 									
 		@wave_view.setAiff(@auProcessor.aiff)
+		@spectrum_view.setAiff(@auProcessor.aiff)
 		
 	end
 	
 	def load(sender)
-
 		loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
-		
-		
-
 	end
 	
 	def ontimer(timer)
-		#redraw
 		return if @state != :play
 		@wave_view.piriodicUpdate
+		@spectrum_view.setNeedsDisplay(true)
 	end
 	
 	def lowpass(sender)

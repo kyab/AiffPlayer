@@ -10,6 +10,10 @@
 #include <vector>
 #include <complex>
 
+#include <sys/time.h>
+#include <sys/times.h>
+
+
 @interface Aiff : NSObject {
 	//NSMutableArray *_buffer_l;
 	unsigned long _sampleCount;
@@ -20,6 +24,13 @@
 	unsigned long _currentFrame;
 	unsigned long _scribStartFrame;
 	Boolean _scrib;
+	id _observer;	//TODO: make observer to list
+	SEL _notify_selector;
+	
+	//DFT buffer
+	std::vector<std::complex<double> >_samples;
+	std::vector<std::complex<double> >_result;
+
 }
 
 - (void) loadFile: (NSString *)fileName;
@@ -39,8 +50,9 @@
 - (Boolean)scrib;
 - (void) setScrib: (Boolean)b;
 
-//
-//-(std::vector<complex>)getDFTBuffer;
+-(std::vector<std::complex<double> >)getDFTBuffer;
+-(std::vector<std::complex<double> >)getSlowFFTBuffer;
+-(std::vector<std::complex<double> >)getFastFFTBuffer;
 //-(std::vector<complex>)getFFTBuffer;
 
 //frame (position in sample) handling
@@ -48,6 +60,9 @@
 - (unsigned long) totalFrameCount;
 - (void) setCurrentFrameInRate: (float) rate scribStart:(Boolean)scribStart ;
 
+
+//observer
+- (void)observeFrameChange:(id) observer forSelector:(SEL) sel;
 
 //
 - (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data;  

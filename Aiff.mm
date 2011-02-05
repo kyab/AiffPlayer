@@ -11,7 +11,8 @@
 #include "ieee.h"
 #include <string>
 #include <vector>
-
+#import "util.h"
+#include "fft.h"
 
 /* note
  
@@ -47,13 +48,26 @@ signed short swapByteOrderShort(signed short org){
 @implementation Aiff
 
 - (id) init{
-	NSLog(@"init");
-	//_buffer_l = [[NSMutableArray alloc] init];
+	self = [super init];
+	if(self){
+		
+		NSLog(@"init");
+		//_buffer_l = [[NSMutableArray alloc] init];
 	
-	_currentFrame = 0;
-	_useLowPass = false;
-	_scrib = NO;
+		_currentFrame = 0;
+		_useLowPass = false;
+		_scrib = NO;
+		_observer = nil;
+	
+		typedef std::complex<float> complexf;
+	
+		_samples.assign(1024, complexf(0.0));
+		_result.assign(1024, complexf(0.0));
+	}
+	
 	return self;
+	
+	
 }
 
 - (void) dealloc{
@@ -230,7 +244,12 @@ signed short swapByteOrderShort(signed short org){
 		_scribStartFrame = _currentFrame;
 	}
 	
-	NSLog(@"current frame changed to %u", _currentFrame);
+	//notify to observers.
+	if (_observer){
+		[_observer performSelector:_notify_selector];
+	}
+	
+	//NSLog(@"current frame changed to %u", _currentFrame);
 }
 
 - (unsigned long) totalFrameCount{
@@ -284,11 +303,81 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"LOWPASS sample created");
 }
 
-/*
--(std::vector<complex>)getDFTBuffer{
-	return std::vector<complex>();
+-(std::vector<std::complex<double> >)getSlowFFTBuffer{
+	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	const int SHORT_MAX = 0xFFFF/2;
+	
+	//get float values (-1.0 to 1.0, left channel only)
+	for(int i = 0 ; i < 1024; i++){
+		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+	}	
+	
+	Timer timer ; timer.start();
+	slowForwardFFT(&_samples[0], 1024, &_result[0]);
+	timer.stop();
+	NSLog(@"FFT(slow recursive) for 1024 samples takes %f[msec]", (timer.result())*1000);
+	return _result;
 }
 
+-(std::vector<std::complex<double> >)getFastFFTBuffer{
+	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	const int SHORT_MAX = 0xFFFF/2;
+	
+	//get float values (-1.0 to 1.0, left channel only)
+	for(int i = 0 ; i < 1024; i++){
+		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+	}	
+	
+	Timer timer ; timer.start();
+	fastForwardFFT(&_samples[0], 1024, &_result[0]);
+	timer.stop();
+	NSLog(@"FFT(fast) for 1024 samples takes %f[msec]", (timer.result())*1000);
+	return _result;
+}
+
+
+
+//DFTの実装。メインループで300ms程度(debug)かかっている。double版にしても290ms程度
+-(std::vector<std::complex<double> >)getDFTBuffer{
+	//refer book "Programmers Guide to Sound"
+
+	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	const int SHORT_MAX = 0xFFFF/2;
+	
+	Timer timer1; timer1.start();
+	//get float values (-1.0 to 1.0, left channel only)
+	for(int i = 0 ; i < 1024; i++){
+		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+	}
+	timer1.stop();
+	//NSLog(@"normalize loop time = %f[msec]", timer1.result());	//ほとんど時間かかっていない。
+	
+	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+	struct tms startTms;
+	clock_t startClock = times(&startTms);
+	
+	static const double twoPi = 2 * 3.1415926536;	//TODO: replace by library constant definition
+	for(int f = 0; f < 1024; f++){
+		_result[f] = std::complex<double>(0.0);
+		for (int t = 0; t < 1024; t++){
+			std::complex<double> val = _samples[t];
+			
+			//std::complex<double>にキャストしておかないと、operator *がないと言われる。
+			//std::operator *(complex<t>, complex<t>)は定義されているが、キャストがきかないため。。
+			//piをfloatで定義する手もある。
+			_result[f] += val * (std::polar(1.0, -twoPi * f * t / 1024));
+		}
+	}
+	CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+	NSLog(@"DFT for 1024 samples takes %f[msec]", (endTime - startTime)*1000);
+	
+	struct tms endTms;
+	clock_t endClock = times(&endTms);
+	NSLog(@"times(): %ul", (endTms.tms_utime + endTms.tms_stime) - (startTms.tms_utime + startTms.tms_stime));
+	printf("sysconf(_SC_CLK_TCK) = %f\n", (double)sysconf(_SC_CLK_TCK));
+	return _result;	//absして1024で割るとOKか？
+}
+/*
 -(std::vector<complex>)getFFTBuffer{
 	return std::vector<complex>();
 }*/
@@ -331,6 +420,12 @@ signed short swapByteOrderShort(signed short org){
 	}
 	
 	return YES;
+}
+
+//observer
+- (void)observeFrameChange:(id) observer forSelector:(SEL) sel{
+	_observer = observer;
+	_notify_selector = sel;
 }
 
 @end
