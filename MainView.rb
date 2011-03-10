@@ -15,7 +15,7 @@ class MainView < NSView
 	end
 	
 	
-#NSDraggingDestination protocol
+	#NSDraggingDestination protocol
 	def draggingEntered(sender)
 		pboard = sender.draggingPasteboard
 		

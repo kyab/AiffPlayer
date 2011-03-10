@@ -43,10 +43,8 @@
 	
 	if (_aiff == nil) return;
 	using namespace std;
-	vector<complex <double> > spectrum  = [_aiff getSlowFFTBuffer];
-	//vector<complex <double> > spectrum  = [_aiff getFastFFTBuffer];
-	//vector<complex <double> > spectrum  = [_aiff getDFTBuffer];
-	NSLog(@" spectrum size = %d", spectrum.size());
+	
+	vector<complex <double> > spectrum  = [_aiff getFastFFTBuffer];
 	
 	NSRect bounds = [self bounds];
 	
@@ -66,7 +64,7 @@
 	[[NSColor yellowColor] set];
 	[path stroke];
 	timer.stop();
-	NSLog(@"drwaing takes %f[msec]", timer.result()*1000);
+	//NSLog(@"drwaing takes %f[msec]", timer.result()*1000);
 	
 }
 

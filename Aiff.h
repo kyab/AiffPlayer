@@ -20,12 +20,18 @@
 	NSString *_fileName;
 	std::vector<signed short> _stlbuffer;
 	std::vector<signed short> _stlbuffer_lowpassed;
+	
+	std::vector<float> _left;
 	Boolean _useLowPass;
 	unsigned long _currentFrame;
 	unsigned long _scribStartFrame;
 	Boolean _scrib;
 	id _observer;	//TODO: make observer to list
 	SEL _notify_selector;
+	
+	
+	//ぐちゃぐちゃになってきたｗ
+	
 	
 	//DFT buffer
 	std::vector<std::complex<double> >_samples;
@@ -44,6 +50,10 @@
 
 //the buffer(whole)
 - (std::vector<signed short> *)stlbuffer;
+
+
+//the buffer(float left)
+-(std::vector<float> *) left;
 
 
 //scrib playback support

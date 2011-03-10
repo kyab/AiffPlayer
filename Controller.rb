@@ -10,11 +10,12 @@ class Controller
 	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename, :check_lowpass;
 	attr_accessor :start_btn, :stop_btn;
 	attr_accessor :state;
+	attr_accessor :window
 	
 	attr_accessor :spectrum_view;
 	
 	def awakeFromNib()
-		NSLog("Controller.rb awaked from nib")
+		NSLog("The main Controller awaked from nib")
 		NSLog("Running on MacRuby " + MACRUBY_VERSION)
 		
 		gc = NSGarbageCollector.defaultCollector()
@@ -27,6 +28,17 @@ class Controller
 		@auProcessor = AUProcessor.new
 	end
 	
+	def applicationDidBecomeActive(notification)
+		puts "applicationDidBecomeActive"
+		@spectrum3DWindowController = Spectrum3DWindowController.alloc.init
+		@spectrum3DWindowController.showWindow(nil, @spectrum3DWindowController)
+	end
+	
+	def applicationDidFinishLaunching(notification)
+		puts "applicationDidFinishLaunching"
+	end
+	#IB Actions
+	
 	def hello(sender)
 		puts "Controller#hello"
 	end
@@ -34,7 +46,6 @@ class Controller
 	def initCoreAudio(sender)
 		@auProcessor.initCoreAudio
 		@start_btn.enabled= true;
-	
 	end
 	
 	def start(sender)
@@ -52,6 +63,15 @@ class Controller
 		@state = :stop
 	end
 	
+	def load(sender)
+		loadAiff("/Users/koji/works/2011_02/m/sound_files/MilkeyWay.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
+		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
+	end
+	
+	#---
 	def loadAiff(file)
 		@check_lowpass.state = NSOffState
 		@auProcessor.loadAiff(file)
@@ -64,18 +84,15 @@ class Controller
 									selector: 'ontimer:',
 									userInfo:nil,
 									repeats:true)
-									
-		@wave_view.setAiff(@auProcessor.aiff)
-		@spectrum_view.setAiff(@auProcessor.aiff)
 		
-	end
-	
-	def load(sender)
-		loadAiff("/Users/koji/work/m/sound_files/MilkeyWay.aif");
-		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
-		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
-		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");
-		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_supershort.aif");
+		[@wave_view, @spectrum_view].each do |view|
+			view.setAiff(@auProcessor.aiff)
+		end
+				
+		@window.setTitleWithRepresentedFilename(file)
+		
+		@spectrum3DWindowController.setAiff(@auProcessor.aiff)
+		
 	end
 	
 	def ontimer(timer)
@@ -84,6 +101,14 @@ class Controller
 		@spectrum_view.setNeedsDisplay(true)
 	end
 	
+	#delegation method
+	def applicationShouldTerminateAfterLastWindowClosed(sender)
+		puts "last window closed"
+		return true
+	end
+	
+	
+	#-- minor functionarity (may erase soon)
 	def lowpass(sender)
 		p sender.state
 		if (sender.state == NSOnState)
@@ -142,10 +167,6 @@ class Controller
 		@auProcessor.setFreq(sender.intValue)
 	end
 	
-	#delegation method
-	def applicationShouldTerminateAfterLastWindowClosed(sender)
-		puts "last window closed"
-		return true
-	end
+
 end
 	

@@ -14,6 +14,8 @@
 #import "util.h"
 #include "fft.h"
 
+static const int SHORT_MAX = 0xFFFF/2;
+
 /* note
  
  基本的にAIFFはビッグエンディアン。仕様書には
@@ -83,6 +85,8 @@ signed short swapByteOrderShort(signed short org){
 	_sampleCount = 0;
 	_stlbuffer.clear();
 	_stlbuffer_lowpassed.clear();
+	_left.clear();
+	
 	_useLowPass = false;
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
@@ -192,14 +196,17 @@ signed short swapByteOrderShort(signed short org){
 
 
 	printf("loading buffers...");
-	//if (channels == 1){
+	//if (channels == 1){		//assuming stereo only?
 		//ensure size.
 		signed short samples[sampleFrames*channels];
 		fread(samples, 2, sampleFrames*channels, fp);
 		printf("sampleFrames = %ld\n", sampleFrames);
 		for (int i = 0; i < sampleFrames*channels ; i++){
-
+			
 			_stlbuffer.push_back(swapByteOrderShort(samples[i]));
+			if (0 == (i % 2)){
+				_left.push_back((float)samples[i]/SHORT_MAX);
+			}
 		}
 	
 	printf("STL Buffer array size = %lu\n", _stlbuffer.size());
@@ -209,8 +216,8 @@ signed short swapByteOrderShort(signed short org){
 	float startMicroSecFloat = startMicroSec.lo + startMicroSec.hi*4294967296.0; 
 	float endMicroSecFloat = endMicroSec.lo + endMicroSec.hi * 4294967296.0; 
 	float duration = (endMicroSecFloat - startMicroSecFloat)/1000;
-	printf("done(takes %f[msec]\n", duration);
-	printf("done(takes %f[sec]\n", CFAbsoluteTimeGetCurrent() - start);
+	printf("done(file reading takes %f[msec]\n", duration);
+	printf("done(file reading takes %f[sec]\n", CFAbsoluteTimeGetCurrent() - start);
 	
 	//もっと高精度のタイマはたぶんこちら
 	//http://www.carbondev.com/site/?page=Time
@@ -275,6 +282,11 @@ signed short swapByteOrderShort(signed short org){
 	return _useLowPass ? &_stlbuffer_lowpassed : &_stlbuffer;
 }
 
+//also breaking encupsulation!
+-(std::vector<float> *) left{
+	return &_left;
+}
+
 - (void)setUseLowpass:(Boolean)useLowpass{
 	_useLowPass = useLowpass;
 	if (_useLowPass){
@@ -315,7 +327,7 @@ signed short swapByteOrderShort(signed short org){
 	Timer timer ; timer.start();
 	slowForwardFFT(&_samples[0], 1024, &_result[0]);
 	timer.stop();
-	NSLog(@"FFT(slow recursive) for 1024 samples takes %f[msec]", (timer.result())*1000);
+	//NSLog(@"FFT(slow recursive) for 1024 samples takes %f[msec]", (timer.result())*1000);
 	return _result;
 }
 
@@ -323,15 +335,20 @@ signed short swapByteOrderShort(signed short org){
 	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
 	const int SHORT_MAX = 0xFFFF/2;
 	
+	int frame = _currentFrame;
+	if (_scrib){
+		frame = _scribStartFrame;
+	}
+	
 	//get float values (-1.0 to 1.0, left channel only)
 	for(int i = 0 ; i < 1024; i++){
-		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+		_samples[i] = ( (double)stlbuffer[(frame+ i)*2] / SHORT_MAX);
 	}	
 	
 	Timer timer ; timer.start();
 	fastForwardFFT(&_samples[0], 1024, &_result[0]);
 	timer.stop();
-	NSLog(@"FFT(fast) for 1024 samples takes %f[msec]", (timer.result())*1000);
+	//NSLog(@"FFT(fast) for 1024 samples takes %f[msec]", (timer.result())*1000);
 	return _result;
 }
 
@@ -354,7 +371,7 @@ signed short swapByteOrderShort(signed short org){
 	
 	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 	struct tms startTms;
-	clock_t startClock = times(&startTms);
+	//clock_t startClock = times(&startTms);
 	
 	static const double twoPi = 2 * 3.1415926536;	//TODO: replace by library constant definition
 	for(int f = 0; f < 1024; f++){
@@ -372,7 +389,7 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"DFT for 1024 samples takes %f[msec]", (endTime - startTime)*1000);
 	
 	struct tms endTms;
-	clock_t endClock = times(&endTms);
+	//clock_t endClock = times(&endTms);
 	NSLog(@"times(): %ul", (endTms.tms_utime + endTms.tms_stime) - (startTms.tms_utime + startTms.tms_stime));
 	printf("sysconf(_SC_CLK_TCK) = %f\n", (double)sysconf(_SC_CLK_TCK));
 	return _result;	//absして1024で割るとOKか？

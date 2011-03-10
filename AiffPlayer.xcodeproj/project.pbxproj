@@ -49,6 +49,10 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		EB0705281327E61500BA0AFB /* Spectrum3D.xib in Resources */ = {isa = PBXBuildFile; fileRef = EB0705271327E61500BA0AFB /* Spectrum3D.xib */; };
+		EB07052A1327E63B00BA0AFB /* Spectrum3DController.rb in Resources */ = {isa = PBXBuildFile; fileRef = EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */; };
+		EB07052F1327E69D00BA0AFB /* SpectrumView3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */; };
+		EB0705301327E69D00BA0AFB /* 3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB07052E1327E69D00BA0AFB /* 3d.mm */; };
 		EB1AFD0A12C53D16007C2648 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1AFD0912C53D16007C2648 /* JavaScriptCore.framework */; };
 		EB2F89A212FD92420038A3FE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB2F898112FD91470038A3FE /* main.cpp */; };
 		EB2F89B712FD952E0038A3FE /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8A22E312FC4F9D0001A9EA /* fft.cpp */; };
@@ -94,6 +98,12 @@
 		4DE3BE130D8651D900ECA448 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = /Library/Frameworks/MacRuby.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* AiffPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AiffPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB0705271327E61500BA0AFB /* Spectrum3D.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Spectrum3D.xib; sourceTree = "<group>"; };
+		EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Spectrum3DController.rb; sourceTree = "<group>"; };
+		EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumView3D.h; sourceTree = "<group>"; };
+		EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView3D.mm; sourceTree = "<group>"; };
+		EB07052D1327E69D00BA0AFB /* 3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3d.h; sourceTree = "<group>"; };
+		EB07052E1327E69D00BA0AFB /* 3d.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = 3d.mm; sourceTree = "<group>"; };
 		EB1AFD0912C53D16007C2648 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EB2F898012FD91470038A3FE /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		EB2F898112FD91470038A3FE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -149,6 +159,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EB07052D1327E69D00BA0AFB /* 3d.h */,
+				EB07052E1327E69D00BA0AFB /* 3d.mm */,
 				EB8A22E212FC4F9D0001A9EA /* fft.h */,
 				EB8A22E312FC4F9D0001A9EA /* fft.cpp */,
 				EB5FDD1F12D2FE5400B34D5A /* Aiff.h */,
@@ -157,6 +169,8 @@
 				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
 				EB62FDF412F6D973001F1B87 /* SpectrumView.h */,
 				EB62FDF512F6D973001F1B87 /* SpectrumView.mm */,
+				EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */,
+				EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */,
 				EB423EEB12D5D8B2009069BF /* Legacy */,
 				EB423EE912D5D89F009069BF /* Utility */,
 				EB62FD8912F6B4BE001F1B87 /* Aiff_internal */,
@@ -164,6 +178,7 @@
 				EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
 				EBB6F8DC12E20CAA00DE75FB /* MainView.rb */,
+				EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -236,6 +251,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EB0705271327E61500BA0AFB /* Spectrum3D.xib */,
 				2BFA9DA510CDF852007972A1 /* MainMenu.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -357,6 +373,8 @@
 				EBB1B75E12BB368300E07FD0 /* Controller.rb in Resources */,
 				EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */,
 				EBB6F8DD12E20CAA00DE75FB /* MainView.rb in Resources */,
+				EB0705281327E61500BA0AFB /* Spectrum3D.xib in Resources */,
+				EB07052A1327E63B00BA0AFB /* Spectrum3DController.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +436,8 @@
 				EB90B1CC12DA34EC00A44013 /* WholeViewObjC.mm in Sources */,
 				EB62FDF612F6D973001F1B87 /* SpectrumView.mm in Sources */,
 				EB8A22E412FC4F9D0001A9EA /* fft.cpp in Sources */,
+				EB07052F1327E69D00BA0AFB /* SpectrumView3D.mm in Sources */,
+				EB0705301327E69D00BA0AFB /* 3d.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

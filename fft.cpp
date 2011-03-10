@@ -12,6 +12,25 @@
 
 static const double PI = M_PI;//3.1415926536;
 
+typedef double (*window_func)(double);
+
+
+static double hamming_window(double x){
+	return 0.54 - 0.46*cos(2*PI*x);
+}
+
+static double hann_window(double x){
+	return 0.5 - 0.5*cos(2*PI*x);
+}
+
+static double blackman_window(double x){
+	return 0.42 -0.5*cos(2*PI*x) + 0.08*cos(4*PI*x);
+}
+
+static double zero_window(double x){
+	return 0;
+}
+
 static void slowFFTRecursion(
 							 complex<double> *samples, 
 							 int length, 
@@ -36,15 +55,24 @@ static void slowFFTRecursion(
 		result[j] += t;
 	}	
 }
-	
+
 
 void slowForwardFFT(complex<double> *samples, int length, complex<double> *result){
 	slowFFTRecursion(samples, length, 0, 1, result);
 }
 
+static void windowing(complex<double> *samples, int length, window_func func){
+	for (int i = 0 ; i < length ; i++){
+		samples[i] *= func((double)i/(length-1));
+	}
+	
+}	
 
 static void rearrange(complex<double> *samples, int length){
-	printf("size of int = %lu\n", sizeof(int));
+	//printf("size of int = %lu\n", sizeof(int));
+	
+	//windowing
+	windowing(samples, length, hann_window);
 	
 	static unsigned int rearrangeSize = 0;	//size of rearrange table
 	static unsigned int *rearrange = 0;
@@ -101,11 +129,11 @@ void fastForwardFFT(complex<double> *samples_org, int length, complex<double> *r
 	 		currentPhaseShift *= phaseShiftStep;
 		}
 		
-		std::cout << currentPhaseShift << "\n";
+		//std::cout << currentPhaseShift << "\n";
 	}
 	
 }
-	
+
 void DFT(complex<double> *samples, int length, complex<double> *result){
 	for (int f = 0; f < length; f++){
 		result[f] = complex<double>(0.0);
@@ -115,4 +143,3 @@ void DFT(complex<double> *samples, int length, complex<double> *result){
 		}
 	}
 }
-	
