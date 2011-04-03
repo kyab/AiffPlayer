@@ -85,13 +85,12 @@ class Controller
 									userInfo:nil,
 									repeats:true)
 		
-		[@wave_view, @spectrum_view].each do |view|
+		[@wave_view, @spectrum_view,@spectrum3DWindowController].each do |view|
 			view.setAiff(@auProcessor.aiff)
 		end
 				
 		@window.setTitleWithRepresentedFilename(file)
-		
-		@spectrum3DWindowController.setAiff(@auProcessor.aiff)
+
 		
 	end
 	
@@ -124,6 +123,7 @@ class Controller
 		@auProcessor.listOutputDevices
 	end
 	
+    #TODO: extract out to other sample application
 	def listOutputDevices_ruby(sender)
 		pSize = Pointer.new("I");
 		r = AudioHardwareGetPropertyInfo(KAudioHardwarePropertyDevices, pSize, nil)

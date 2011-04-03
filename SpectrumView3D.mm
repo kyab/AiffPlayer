@@ -57,9 +57,6 @@ static const int SPECTRUM3D_COUNT = 40;
 	
 	//fire the timer even while mouse tracking!
 	[runLoop addTimer:timer forMode:NSEventTrackingRunLoopMode];
-	
-
-	
 }
 
 - (void)ontimer:(NSTimer *)timer {
@@ -100,8 +97,6 @@ static const int SPECTRUM3D_COUNT = 40;
 	pointXY.y -= 20;
 	return pointXY;
 }
-
-//TODO: handling nyquist refrection
 
 -(void)drawSpectrum:(const Spectrum &)spectrum index:(int)index{
 	NSBezierPath *path = [[NSBezierPath bezierPath] retain];

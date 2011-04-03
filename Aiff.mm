@@ -204,8 +204,14 @@ signed short swapByteOrderShort(signed short org){
 		for (int i = 0; i < sampleFrames*channels ; i++){
 			
 			_stlbuffer.push_back(swapByteOrderShort(samples[i]));
+			float val = swapByteOrderShort(samples[i]);
+			val /= SHORT_MAX;
+			val *= 0.8;
+			
 			if (0 == (i % 2)){
-				_left.push_back((float)samples[i]/SHORT_MAX);
+				_left.push_back(val);
+			}else{
+				_right.push_back(val);
 			}
 		}
 	
@@ -390,25 +396,26 @@ signed short swapByteOrderShort(signed short org){
 	
 	struct tms endTms;
 	//clock_t endClock = times(&endTms);
-	NSLog(@"times(): %ul", (endTms.tms_utime + endTms.tms_stime) - (startTms.tms_utime + startTms.tms_stime));
+	NSLog(@"times(): %lu", (endTms.tms_utime + endTms.tms_stime) - (startTms.tms_utime + startTms.tms_stime));
 	printf("sysconf(_SC_CLK_TCK) = %f\n", (double)sysconf(_SC_CLK_TCK));
 	return _result;	//absして1024で割るとOKか？
 }
-/*
--(std::vector<complex>)getFFTBuffer{
-	return std::vector<complex>();
-}*/
+
 
 //copy buffer and procees _currentFrame
-- (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data{
+- (Boolean) renderToBuffer:(UInt32)sampleCount left:(void *)pLeft right:(void *)pRight{
 
+    /*
 	//use lowpassed buffer if _useLowPass
 	std::vector<signed short> &stlbuffer = _useLowPass ? _stlbuffer_lowpassed : _stlbuffer; 
-	
+	*/
+    
 	//currently loop playback
-	unsigned int written_frames = 0;
-	unsigned short *pBuffer = reinterpret_cast<unsigned short *>(data);
 	
+	float *pBufferLeft = reinterpret_cast<float *>(pLeft);
+    float *pBufferRight = reinterpret_cast<float *>(pRight);
+	
+    unsigned int written_frames = 0;
 	while(true){
 		if (written_frames > sampleCount){
 			break;
@@ -424,13 +431,13 @@ signed short swapByteOrderShort(signed short org){
 		}
 		
 		//loop handling
-		if (_currentFrame*2 > stlbuffer.size()){
+		if (_currentFrame > _left.size()){
 			_currentFrame = 0;
 			NSLog(@"LOOP");
 		}
 		
-		pBuffer[written_frames*2] = stlbuffer[_currentFrame*2];
-		pBuffer[written_frames*2+1] = stlbuffer[_currentFrame*2 + 1];
+		pBufferLeft[written_frames] = _left[_currentFrame];
+		pBufferRight[written_frames] = _right[_currentFrame];
 	
 		written_frames++;	
 		_currentFrame++;

@@ -22,9 +22,10 @@
 - (void) start;
 - (void) stop;
 
+/*
 - (void) setFormat;
 - (void) setCallback;
-
+*/
 
 
 - (Boolean)loadAiff:(NSString *)fileName;

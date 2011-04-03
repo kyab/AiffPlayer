@@ -15,25 +15,27 @@
 
 
 @interface Aiff : NSObject {
-	//NSMutableArray *_buffer_l;
+
 	unsigned long _sampleCount;
 	NSString *_fileName;
-	std::vector<signed short> _stlbuffer;
-	std::vector<signed short> _stlbuffer_lowpassed;
+
 	
 	std::vector<float> _left;
-	Boolean _useLowPass;
+    std::vector<float> _right;
+
+    
 	unsigned long _currentFrame;
 	unsigned long _scribStartFrame;
 	Boolean _scrib;
 	id _observer;	//TODO: make observer to list
 	SEL _notify_selector;
 	
-	
-	//ぐちゃぐちゃになってきたｗ
-	
-	
 	//DFT buffer
+    
+	std::vector<signed short> _stlbuffer;
+	Boolean _useLowPass;
+	std::vector<signed short> _stlbuffer_lowpassed;
+
 	std::vector<std::complex<double> >_samples;
 	std::vector<std::complex<double> >_result;
 
@@ -42,7 +44,6 @@
 - (void) loadFile: (NSString *)fileName;
 - (NSString *)fileName;
 
-//- (NSMutableArray *)buffer;
 
 //handling lowpass filter
 - (void)lowpass;
@@ -50,7 +51,6 @@
 
 //the buffer(whole)
 - (std::vector<signed short> *)stlbuffer;
-
 
 //the buffer(float left)
 -(std::vector<float> *) left;
@@ -75,6 +75,6 @@
 - (void)observeFrameChange:(id) observer forSelector:(SEL) sel;
 
 //
-- (Boolean) renderToBuffer:(UInt32)channels sampleCount:(UInt32)sampleCount data:(void *)data;  
+- (Boolean) renderToBuffer:(UInt32)sampleCount left:(void *)pLeft right:(void *)pRight;  
 
 @end	

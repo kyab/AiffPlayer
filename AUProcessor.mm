@@ -25,7 +25,6 @@ OSStatus MyRender( void                        *inRefCon,
 				  AudioBufferList             *ioData
 				  ){
 	
-	
 	//calling back to AUProcessor::renderCallback
 	AUProcessor *processor = (AUProcessor *)inRefCon;
 	return [processor renderCallback:ioActionFlags :inTimeStamp :inBusNumber :inNumberFrames :ioData];
@@ -278,17 +277,16 @@ NSString *EnumToFOURCC(UInt32 val){
 	}
 	NSLog(@"identifier = %@\n",EnumToFOURCC(streamDescription.mFormatID));
 	
-	//44100,16bit, stereoにする
+	//44100,32bit float, stereoにする
 	streamDescription.mSampleRate = 44100.0;
 	streamDescription.mFormatID = kAudioFormatLinearPCM;
-	streamDescription.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | 
-									   kLinearPCMFormatFlagIsPacked    	;
-	streamDescription.mBytesPerPacket = 4;
+	//streamDescription.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked    	;
+	streamDescription.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+    streamDescription.mBytesPerPacket = 4;
 	streamDescription.mFramesPerPacket = 1;
 	streamDescription.mBytesPerFrame = 4;
 	streamDescription.mChannelsPerFrame = 2;
-	streamDescription.mBitsPerChannel = 16;	//例えば17にしてもSet,Initialize,Startまでは成功するんだけど、再生できない。
-	
+	streamDescription.mBitsPerChannel = 32;//16;	//例えば17にしてもSet,Initialize,Startまでは成功するんだけど、再生できない。
 	
 	result = AudioUnitSetProperty(gOutputUnit,kAudioUnitProperty_StreamFormat,kAudioUnitScope_Input,0,
 								  		&streamDescription,
@@ -338,7 +336,7 @@ NSString *EnumToFOURCC(UInt32 val){
 
 - (OSStatus) renderCallback:(AudioUnitRenderActionFlags *)ioActionFlags :(const AudioTimeStamp *) inTimeStamp:
 (UInt32) inBusNumber: (UInt32) inNumberFrames :(AudioBufferList *)ioData{
-	//NSLog(@"MyRender");
+
 	
 	//http://www.cocoabuilder.com/archive/cocoa/294771-thread-not-registered-mystery-under-gc.html
 	objc_start_collector_thread();	//no effect??
@@ -346,13 +344,13 @@ NSString *EnumToFOURCC(UInt32 val){
 	
 	[NSThread currentThread];	//seems does not work as GC Programming Guide says.????
 	//http://osdir.com/ml/cocoa-dev/2009-09/msg00672.html OK, don't care about auto_zone_thread_registration_error() in console log.
-	
+
 	static UInt32 count = 0;
 	if ((count % 100) == 0){
 		
 		NSLog(@"MyRender," 
 			  "%f bus number = %u, frames = %u,"
-			  "ratescalar = %u", 
+			  "ratescalar = %f", 
 			  inTimeStamp->mSampleTime, 
 			  inBusNumber, 
 			  inNumberFrames,
@@ -368,13 +366,15 @@ NSString *EnumToFOURCC(UInt32 val){
 	}
 	count++;
 	
-	UInt32 channels = ioData->mBuffers[0].mNumberChannels;
+	//UInt32 channels = ioData->mBuffers[0].mNumberChannels;
 	UInt32 sampleNum = inNumberFrames;	//in my case
-	void *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
+	//void *pBuffer =  (SInt16 *)ioData->mBuffers[0].mData;
 	
+    /*
 	[m_aiff renderToBuffer:channels
 			   sampleCount:sampleNum
-					  data:pBuffer];
+					  data:pBuffer];*/
+    [m_aiff renderToBuffer:sampleNum left:ioData->mBuffers[0].mData right:ioData->mBuffers[1].mData];
 
 	return noErr;
 }
