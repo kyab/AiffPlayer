@@ -16,7 +16,7 @@
 
 @interface Aiff : NSObject {
 
-	unsigned long _sampleCount;
+	//unsigned long _sampleCount;
 	NSString *_fileName;
 
 	
@@ -32,28 +32,32 @@
 	
 	//DFT buffer
     
+	/*
 	std::vector<signed short> _stlbuffer;
 	Boolean _useLowPass;
 	std::vector<signed short> _stlbuffer_lowpassed;
 
+	/
 	std::vector<std::complex<double> >_samples;
 	std::vector<std::complex<double> >_result;
-
+*/
 }
 
 - (void) loadFile: (NSString *)fileName;
 - (NSString *)fileName;
 
 
+/*
 //handling lowpass filter
 - (void)lowpass;
 - (void)setUseLowpass: (Boolean)useLowpass;
 
 //the buffer(whole)
 - (std::vector<signed short> *)stlbuffer;
-
+*/
 //the buffer(float left)
 -(std::vector<float> *) left;
+-(std::vector<float> *) right;
 
 
 //scrib playback support

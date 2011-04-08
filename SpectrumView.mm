@@ -43,12 +43,17 @@
 	
 	if (_aiff == nil) return;
 	using namespace std;
-	
+	Timer timer; 
+	timer.start();
+
 	vector<complex <double> > spectrum  = [_aiff getFastFFTBuffer];
+
+	timer.stop();
+	NSLog(@"fft takes %f[msec]", timer.result()*1000);
 	
 	NSRect bounds = [self bounds];
 	
-	Timer timer; timer.start();
+	timer.start();
 	
 	NSBezierPath *path = [[NSBezierPath bezierPath] retain];
 	[path moveToPoint:NSMakePoint(0,0)];
@@ -64,7 +69,7 @@
 	[[NSColor yellowColor] set];
 	[path stroke];
 	timer.stop();
-	//NSLog(@"drwaing takes %f[msec]", timer.result()*1000);
+	NSLog(@"drwaing takes %f[msec]", timer.result()*1000);
 	
 }
 

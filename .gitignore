@@ -6,6 +6,9 @@ build/
 *.perspective
 *.perspectivev3
 *.mode1v3
+*.mode2v3
 
+xcuserdata
+project.xcworkspace
 #Subversion
 .svn/

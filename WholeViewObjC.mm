@@ -37,8 +37,6 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	NSLog(@"WhileViewObjec::setAiff called with arg=%p",aiff);
 	
 	_aiff = aiff;
-	//[self recreateWavePath];
-	//[self recreateWavePath_transformed];
 	[self recreateWavePath2];
 	[self setNeedsDisplay:YES];
 	
@@ -72,28 +70,6 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	//だめだー、これだけだと以前の再生カーソルが消えない場合がある。レイヤー表示とか使うべきなの？
 }
 
-/*
--(void)recreateWavePath{
-	
-	[_wavepath release];
-	_wavepath =  [[NSBezierPath bezierPath] retain];
-	
-	[_wavepath setLineWidth:1];
-	
-	std::vector<signed short> *samples = [_aiff stlbuffer];
-	NSLog(@"recreateWavePath count=%d", samples->size()/2);
-	
-	//さすがにこれだと重すぎる。
-	[_wavepath moveToPoint: NSMakePoint(0, (*samples)[0])];
-	for (int i =0; i < samples->size() ;i+=2){
-		float x = i;
-		float y = (*samples)[i];
-		[_wavepath lineToPoint: NSMakePoint(x,y)];
-	}
-	
-}
-*/
-
 -(void)recreateWavePath2{
 	
 	[_wavepath release];
@@ -106,16 +82,17 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 	[_wavepath setLineWidth:1.0f];
 	//[_wavepath setLineCapStyle:NSRoundLineCapStyle];
-	std::vector <signed short >*samples = [_aiff stlbuffer];
-	NSLog(@"recreateWavePath2 count=%d", samples->size()/2);
+	
+	std::vector <float >*samples = [_aiff right];
+	NSLog(@"recreateWavePath2 count=%lu", samples->size());
 	
 	[_wavepath moveToPoint:NSMakePoint(0, (*samples)[0])];
 	
-	const int SHORT_MAX = 0xFFFF/2;
+	//const int SHORT_MAX = 0xFFFF/2;
 	float y_addition = bounds.size.height / 2.0f;
-	float y_ratio = (1.0f / SHORT_MAX) * (bounds.size.height)/2.0f;
+	float y_ratio = (bounds.size.height)/2.0f;
 	
-	float samples_per_pixel = float(samples->size()/2)/bounds.size.width;
+	float samples_per_pixel = float(samples->size())/bounds.size.width;
 	//TODO このレートが小さい時は全サンプルを描画する方法に変える->Oscilloscopeにて実装済み。
 	
 	//各ピクセルが占めるサンプルの最小値から最大値への縦棒
@@ -124,10 +101,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	for (UInt32 pixel = 1; pixel < bounds.size.width ; pixel++){
 		sample_to = (UInt32)floor(pixel * samples_per_pixel);
 		
-		float max = (*samples)[sample_from*2];
+		float max = (*samples)[sample_from];
 		float min = max;
 		for(int i =sample_from; i < sample_to; i++){
-			float val = (*samples)[i*2];
+			float val = (*samples)[i];
 			if (val > max) max = val;
 			if (val < min) min = val;
 		}
@@ -151,28 +128,6 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 }
 
-/*
--(void)recreateWavePath_transformed{
-	[_wavepath_transformed release];
-	
-	std::vector<signed short> *samples = [_aiff stlbuffer];
-	if (!samples){
-		return;
-	}
-	
-	const int SHORT_MAX = 0xFFFF/2;
-	
-	NSAffineTransform *transform = [NSAffineTransform transform];
-	float x_ratio = (float)([self bounds].size.width) / (samples->size()/2);
-	float y_ratio = (1.0f / SHORT_MAX) * ([self bounds].size.height)/2.0f;
-	float y_addition = [self bounds].size.height / 2.0f;
-	[transform translateXBy:0 yBy:y_addition];
-	[transform scaleXBy:x_ratio yBy:y_ratio];
-	
-	_wavepath_transformed = [transform transformBezierPath:_wavepath];
-	NSLog(@"recreated _wavepath_transformed");
-}
-*/
 - (void)drawRect:(NSRect)rect {
 
 	if ([self inLiveResize]){
@@ -195,7 +150,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 
 	//Make a transform
-	std::vector<signed short> *samples = [_aiff stlbuffer];
+	std::vector<float> *samples = [_aiff left];
 	if (!samples){
 		return;
 	}
@@ -228,7 +183,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-	NSLog(@"mouse down. click count = %d", [theEvent clickCount]);
+	NSLog(@"mouse down. click count = %ld", [theEvent clickCount]);
 	
 	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	NSLog(@"scrib start(%f,%f)", curPoint.x, curPoint.y);

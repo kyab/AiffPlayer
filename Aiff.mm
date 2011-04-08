@@ -57,14 +57,16 @@ signed short swapByteOrderShort(signed short org){
 		//_buffer_l = [[NSMutableArray alloc] init];
 	
 		_currentFrame = 0;
-		_useLowPass = false;
+		//_useLowPass = false;
 		_scrib = NO;
 		_observer = nil;
 	
-		typedef std::complex<float> complexf;
+		/*typedef std::complex<float> complexf;
 	
 		_samples.assign(1024, complexf(0.0));
 		_result.assign(1024, complexf(0.0));
+		*/
+		//_left = _right = NULL;
 	}
 	
 	return self;
@@ -73,7 +75,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (void) dealloc{
-	//[_buffer_l dealloc];
+
 	[super dealloc];
 }
 
@@ -82,12 +84,13 @@ signed short swapByteOrderShort(signed short org){
 	
 	_currentFrame = 0;
 	_scribStartFrame = 0;
-	_sampleCount = 0;
-	_stlbuffer.clear();
-	_stlbuffer_lowpassed.clear();
-	_left.clear();
+	//_sampleCount = 0;
+	//_stlbuffer.clear();
+	//_stlbuffer_lowpassed.clear();
 	
-	_useLowPass = false;
+	_left.clear();
+	_right.clear();
+	//_useLowPass = false;
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
@@ -203,10 +206,10 @@ signed short swapByteOrderShort(signed short org){
 		printf("sampleFrames = %ld\n", sampleFrames);
 		for (int i = 0; i < sampleFrames*channels ; i++){
 			
-			_stlbuffer.push_back(swapByteOrderShort(samples[i]));
+			//_stlbuffer.push_back(swapByteOrderShort(samples[i]));
 			float val = swapByteOrderShort(samples[i]);
 			val /= SHORT_MAX;
-			val *= 0.8;
+			val *= 0.2;
 			
 			if (0 == (i % 2)){
 				_left.push_back(val);
@@ -215,7 +218,7 @@ signed short swapByteOrderShort(signed short org){
 			}
 		}
 	
-	printf("STL Buffer array size = %lu\n", _stlbuffer.size());
+	//printf("STL Buffer array size = %lu\n", _stlbuffer.size());
 
 	UnsignedWide endMicroSec;
 	Microseconds(&endMicroSec);
@@ -247,7 +250,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (void) setCurrentFrameInRate: (float) rate scribStart:(Boolean)scribStart{
-	if (_stlbuffer.size() == 0){
+	if (_left.size() == 0){
 		NSLog(@"aiff is empty now");
 		return;
 	}
@@ -266,7 +269,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (unsigned long) totalFrameCount{
-	return _stlbuffer.size() / 2;
+	return _left.size() / 2;
 }
 
 - (Boolean)scrib{
@@ -282,17 +285,22 @@ signed short swapByteOrderShort(signed short org){
 }
 
 
-
+/*
 //break encupsulation
 - (std::vector<signed short> *)stlbuffer{
 	return _useLowPass ? &_stlbuffer_lowpassed : &_stlbuffer;
 }
-
+*/
 //also breaking encupsulation!
 -(std::vector<float> *) left{
 	return &_left;
 }
 
+-(std::vector<float> *) right{
+	return &_right;
+}
+
+/*
 - (void)setUseLowpass:(Boolean)useLowpass{
 	_useLowPass = useLowpass;
 	if (_useLowPass){
@@ -301,7 +309,9 @@ signed short swapByteOrderShort(signed short org){
 		}
 	}
 }
+ */
 
+/*
 //create simple lowpassed samples.
 - (void)lowpass{
 	_stlbuffer_lowpassed.clear();
@@ -321,41 +331,49 @@ signed short swapByteOrderShort(signed short org){
 	NSLog(@"LOWPASS sample created");
 }
 
+ */
 -(std::vector<std::complex<double> >)getSlowFFTBuffer{
-	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
-	const int SHORT_MAX = 0xFFFF/2;
+	//std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	//const int SHORT_MAX = 0xFFFF/2;
 	
 	//get float values (-1.0 to 1.0, left channel only)
+	
+	std::vector<std::complex<double> > samples;
+	std::vector<std::complex<double> > result;
+	
+	samples.assign(1024, 0.0);
+	result.assign(1024, 0.0);
 	for(int i = 0 ; i < 1024; i++){
-		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+		samples[i] = ( (double)_left[(_currentFrame + i)] );
 	}	
 	
 	Timer timer ; timer.start();
-	slowForwardFFT(&_samples[0], 1024, &_result[0]);
+	slowForwardFFT(&samples[0], 1024, &result[0]);
 	timer.stop();
 	//NSLog(@"FFT(slow recursive) for 1024 samples takes %f[msec]", (timer.result())*1000);
-	return _result;
+	return result;
 }
 
 -(std::vector<std::complex<double> >)getFastFFTBuffer{
-	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
-	const int SHORT_MAX = 0xFFFF/2;
-	
-	int frame = _currentFrame;
-	if (_scrib){
-		frame = _scribStartFrame;
-	}
+	//std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	//const int SHORT_MAX = 0xFFFF/2;
 	
 	//get float values (-1.0 to 1.0, left channel only)
+	
+	std::vector<std::complex<double> > samples;
+	std::vector<std::complex<double> > result;
+	
+	samples.assign(1024, 0.0);
+	result.assign(1024, 0.0);
 	for(int i = 0 ; i < 1024; i++){
-		_samples[i] = ( (double)stlbuffer[(frame+ i)*2] / SHORT_MAX);
+		samples[i] = ( (double)_left[(_currentFrame + i)] );
 	}	
 	
 	Timer timer ; timer.start();
-	fastForwardFFT(&_samples[0], 1024, &_result[0]);
+	fastForwardFFT(&samples[0], 1024, &result[0]);
 	timer.stop();
 	//NSLog(@"FFT(fast) for 1024 samples takes %f[msec]", (timer.result())*1000);
-	return _result;
+	return result;
 }
 
 
@@ -364,13 +382,20 @@ signed short swapByteOrderShort(signed short org){
 -(std::vector<std::complex<double> >)getDFTBuffer{
 	//refer book "Programmers Guide to Sound"
 
-	std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
-	const int SHORT_MAX = 0xFFFF/2;
+	//std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
+	//const int SHORT_MAX = 0xFFFF/2;
 	
 	Timer timer1; timer1.start();
 	//get float values (-1.0 to 1.0, left channel only)
+	std::vector<std::complex<double> > samples;
+	std::vector<std::complex<double> > result;
+	
+	samples.assign(1024, 0.0);
+	result.assign(1024, 0.0);
+	
+	
 	for(int i = 0 ; i < 1024; i++){
-		_samples[i] = ( (double)stlbuffer[(_currentFrame + i)*2] / SHORT_MAX);
+		samples[i] = ( (double)_left[(_currentFrame + i)]);
 	}
 	timer1.stop();
 	//NSLog(@"normalize loop time = %f[msec]", timer1.result());	//ほとんど時間かかっていない。
@@ -381,14 +406,14 @@ signed short swapByteOrderShort(signed short org){
 	
 	static const double twoPi = 2 * 3.1415926536;	//TODO: replace by library constant definition
 	for(int f = 0; f < 1024; f++){
-		_result[f] = std::complex<double>(0.0);
+		result[f] = std::complex<double>(0.0);
 		for (int t = 0; t < 1024; t++){
-			std::complex<double> val = _samples[t];
+			std::complex<double> val = samples[t];
 			
 			//std::complex<double>にキャストしておかないと、operator *がないと言われる。
 			//std::operator *(complex<t>, complex<t>)は定義されているが、キャストがきかないため。。
 			//piをfloatで定義する手もある。
-			_result[f] += val * (std::polar(1.0, -twoPi * f * t / 1024));
+			result[f] += val * (std::polar(1.0, -twoPi * f * t / 1024));
 		}
 	}
 	CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
@@ -398,19 +423,12 @@ signed short swapByteOrderShort(signed short org){
 	//clock_t endClock = times(&endTms);
 	NSLog(@"times(): %lu", (endTms.tms_utime + endTms.tms_stime) - (startTms.tms_utime + startTms.tms_stime));
 	printf("sysconf(_SC_CLK_TCK) = %f\n", (double)sysconf(_SC_CLK_TCK));
-	return _result;	//absして1024で割るとOKか？
+	return result;	//absして1024で割るとOKか？
 }
 
 
 //copy buffer and procees _currentFrame
 - (Boolean) renderToBuffer:(UInt32)sampleCount left:(void *)pLeft right:(void *)pRight{
-
-    /*
-	//use lowpassed buffer if _useLowPass
-	std::vector<signed short> &stlbuffer = _useLowPass ? _stlbuffer_lowpassed : _stlbuffer; 
-	*/
-    
-	//currently loop playback
 	
 	float *pBufferLeft = reinterpret_cast<float *>(pLeft);
     float *pBufferRight = reinterpret_cast<float *>(pRight);
