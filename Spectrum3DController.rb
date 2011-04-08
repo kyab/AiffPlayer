@@ -29,10 +29,7 @@ class Spectrum3DWindowController < NSWindowController
 	
 	def windowDidLoad()	
 		puts "windowDidLoad"
-		#self.window.delegate = self
-		
-		#we do set processor 
-		#@view.setProcessor(@processor)
+
 	end
 	
 	def close()
