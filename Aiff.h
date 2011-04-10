@@ -14,6 +14,11 @@
 #include <sys/times.h>
 
 
+typedef struct __range{
+	int begin;
+	int end;
+} range;
+
 @interface Aiff : NSObject {
 
 	//unsigned long _sampleCount;
@@ -29,6 +34,8 @@
 	Boolean _scrib;
 	id _observer;	//TODO: make observer to list
 	SEL _notify_selector;
+	
+	range selected_range;
 	
 	//DFT buffer
     

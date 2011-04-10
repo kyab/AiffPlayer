@@ -106,7 +106,7 @@ class Controller
 		return true
 	end
 	
-	
+=begin
 	#-- minor functionarity (may erase soon)
 	def lowpass(sender)
 		p sender.state
@@ -118,7 +118,8 @@ class Controller
 
 		@wave_view.forceRedraw();
 	end
-	
+=end	
+
 	def listOutputDevices(sender)
 		@auProcessor.listOutputDevices
 	end

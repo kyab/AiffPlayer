@@ -32,7 +32,7 @@
 }
 
 -(void)updateCurrentFrame:(id)sender{
-	NSLog(@"spectrum view: notified aiff play position change") ;
+	NSLog(@"spectrum view: detect __aiff play position change") ;
 	[self setNeedsDisplay:YES];
 }
 
