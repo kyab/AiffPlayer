@@ -106,19 +106,6 @@ class Controller
 		return true
 	end
 	
-=begin
-	#-- minor functionarity (may erase soon)
-	def lowpass(sender)
-		p sender.state
-		if (sender.state == NSOnState)
-			@auProcessor.setUselowpass(true)
-		else
-			@auProcessor.setUselowpass(false)
-		end
-
-		@wave_view.forceRedraw();
-	end
-=end	
 
 	def listOutputDevices(sender)
 		@auProcessor.listOutputDevices

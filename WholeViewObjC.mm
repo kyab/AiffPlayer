@@ -9,6 +9,8 @@
 #import "WholeViewObjC.h"
 #include <math.h>
 
+static const int CURSOR_BOUND_SIZE = 20;
+
 bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	if ( (rect1.origin.x == rect2.origin.x) &&
 		 (rect1.origin.y == rect2.origin.y) &&
@@ -28,8 +30,8 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
         // Initialization code here.
     }
 	_wavepath = nil;
-	_wavepath_transformed = nil;
 	_prevBounds = [self bounds];
+	_highLight = false;
     return self;
 }
 
@@ -37,9 +39,11 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	NSLog(@"WhileViewObjec::setAiff called with arg=%p",aiff);
 	
 	_aiff = aiff;
+	
+	_aiff.selection.start = 20.0f;
+	_aiff.selection.end = 45.0f;
 	[self recreateWavePath2];
 	[self setNeedsDisplay:YES];
-	
 	
 }
 
@@ -128,6 +132,232 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 }
 
+- (NSRect) selectionRect{
+	NSRect rect = [self bounds];
+	
+	rect.origin.x = _aiff.selection.start / 100.0 * self.bounds.size.width;
+	rect.size.width = _aiff.selection.end / 100.0 * self.bounds.size.width -  rect.origin.x;
+	return rect;
+}
+
+-(NSRect) selectionRectWithoutBound{
+	NSRect rect = [self selectionRect];
+	rect.origin.x += CURSOR_BOUND_SIZE/2;
+	rect.size.width -= CURSOR_BOUND_SIZE;
+	return rect;
+}
+
+-(NSRect) selectionBoundLeftRect{
+	NSRect rect = [self selectionRect];
+	rect.origin.x -= CURSOR_BOUND_SIZE/2;
+	rect.size.width = CURSOR_BOUND_SIZE;
+	return rect;
+}
+
+-(NSRect) selectionBoundRightRect{
+	NSRect rect = [self selectionRect];
+	rect.origin.x += rect.size.width;
+	rect.origin.x -= CURSOR_BOUND_SIZE/2;
+	rect.size.width = CURSOR_BOUND_SIZE;
+	return rect;
+}
+
+- (void)resetCursorRects{
+	[self discardCursorRects];
+	
+	[self addCursorRect:[self selectionRectWithoutBound] cursor:[NSCursor openHandCursor]];
+	[self addCursorRect:[self selectionBoundLeftRect] cursor:[NSCursor resizeLeftRightCursor]];
+	[self addCursorRect:[self selectionBoundRightRect] cursor:[NSCursor resizeLeftRightCursor]];	
+}
+
+
+-(float)percentFromPixelX:(float)x{
+	return 100.0f * x / self.bounds.size.width;	
+}
+
+-(void)dragStarted:(NSPoint)startPoint mode:(DRAGMODE)mode{
+	//push the cursor for each mode.
+	switch(mode){
+		case DRAGMODE_NEWSELECTION:
+			[[NSCursor IBeamCursor] push];
+			break;
+		case DRAGMODE_CHANGEEND:
+		case DRAGMODE_CHANGESTART:
+			[[NSCursor resizeLeftRightCursor] push];
+			break;
+		case DRAGMODE_DRAGAREA:
+			[[NSCursor closedHandCursor] push];
+			break;
+		default:
+			NSAssert(false, @"dragStarted: invalid mode.");
+			break;
+	}
+	
+	//draw fake small selection before actual dragging, for new selection mode.
+	if (mode == DRAGMODE_NEWSELECTION){
+		_aiff.selection.start = 100.0f * startPoint.x / self.bounds.size.width;
+		_aiff.selection.end = _aiff.selection.start + 0.1f;
+	}
+	
+	_highLight = true;
+	[self setNeedsDisplay:YES];
+	
+}
+
+-(void)dragCompleted{
+	[NSCursor pop];
+	[[self window] invalidateCursorRectsForView:self];
+	
+	_highLight = false;
+	[self setNeedsDisplay:YES];
+}
+
+-(void)processDragFromPoint:(NSPoint)startPoint mode:(DRAGMODE)mode{
+	[self dragStarted:startPoint mode:mode];
+	bool loop = true;
+	NSPoint prevPoint = startPoint;
+	while(loop){
+		
+		//////
+		//get the next event and whose mouse location.
+		
+		//note1. drawing is processed in nextEventMatchingMask
+		NSEvent *event = [[self window] nextEventMatchingMask:NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		NSPoint newPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+		
+		switch([event type]){
+			case NSLeftMouseDragged:
+				switch (mode){
+					case DRAGMODE_NEWSELECTION:
+					{
+						//swap position if needed
+						float leftX, rightX;
+						if (newPoint.x > startPoint.x){
+							leftX = startPoint.x;
+							rightX = newPoint.x;
+						}else{
+							leftX = newPoint.x;
+							rightX = startPoint.x;
+						}
+						
+						RangeX *selection = [_aiff selection];
+						selection.start = 100.0 * leftX / self.bounds.size.width;
+						selection.end = 100.0 * rightX / self.bounds.size.width;
+					}
+						break;
+					case DRAGMODE_DRAGAREA:
+					{
+						RangeX *selection = _aiff.selection;
+						
+						float offset = [self percentFromPixelX:(newPoint.x - prevPoint.x)];
+						if (selection.end + offset > 100.0f){
+							//精度に難有りか、、
+							float actual_offset = 100.0f - selection.end;
+							[selection offset:actual_offset];
+							
+							prevPoint.y = newPoint.y;
+							prevPoint.x += actual_offset / 100.0f * self.bounds.size.width;
+						}else if (selection.start + offset < 0.0f){
+							float actual_offset = - selection.start;
+							[selection offset:actual_offset];
+							
+							prevPoint.y = newPoint.y;
+							prevPoint.x += actual_offset / 100.0f * self.bounds.size.width;
+						}else{
+							[selection offset:offset];
+							prevPoint = newPoint;
+						}
+						
+					}
+						break;
+					case DRAGMODE_CHANGESTART:
+					{
+						RangeX *selection = _aiff.selection;
+						
+						float offset = [self percentFromPixelX:(newPoint.x - prevPoint.x)];
+						
+						if (selection.start + offset < 0.0f){
+							//mouse is out of left boundary
+							float actual_offset = -selection.start;
+							selection.start = 0;
+							prevPoint.x += actual_offset / 100.0f * self.bounds.size.width;
+						}else if (selection.start + offset > selection.end){
+							//mouse is righter than end-of-selection.
+							float prev_start = selection.start;
+							selection.start = selection.end;
+							selection.end = prev_start + offset;
+							
+							mode = DRAGMODE_CHANGEEND;
+							prevPoint = newPoint;
+						}else{
+							selection.start += offset;
+							prevPoint = newPoint;
+						}
+						
+					}
+						break;
+					case DRAGMODE_CHANGEEND:
+					{
+						RangeX *selection = _aiff.selection;
+						
+						float offset = [self percentFromPixelX:(newPoint.x - prevPoint.x)];
+						if (selection.end + offset > 100.0f){
+							float actual_offset = 100.0f - selection.end;
+							selection.end = 100.0f;
+							prevPoint.x += actual_offset / 100.0f * self.bounds.size.width;
+						}else if (selection.end + offset < selection.start){
+							float prev_end = selection.end;
+							selection.end = selection.start;
+							selection.start  = prev_end + offset;
+							mode = DRAGMODE_CHANGESTART;
+							prevPoint = newPoint;
+						}else{
+							selection.end += offset;
+							prevPoint = newPoint;
+						}
+					}
+						break;
+					default:
+						break;
+				}
+				[self setNeedsDisplay:YES];
+				break;
+			case NSLeftMouseUp:
+				[NSCursor pop];
+				[[self window] invalidateCursorRectsForView:self];
+				
+				_highLight = false;
+				[self setNeedsDisplay:YES];
+				
+				loop = false; //exit loop
+				break;
+			default:
+				break;
+		}
+	}
+	[self dragCompleted];
+}
+
+- (void)mouseDown:(NSEvent *)theEvent{
+	
+	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	if (NSPointInRect(curPoint,[self selectionRectWithoutBound])){
+		[self processDragFromPoint:curPoint mode:DRAGMODE_DRAGAREA];
+	}else if (NSPointInRect(curPoint, [self selectionBoundLeftRect])){
+		[self processDragFromPoint:curPoint mode:DRAGMODE_CHANGESTART];
+	}else if (NSPointInRect(curPoint, [self selectionBoundRightRect])){
+		[self processDragFromPoint:curPoint mode:DRAGMODE_CHANGEEND];
+	}else{	
+		[self processDragFromPoint:curPoint mode:DRAGMODE_NEWSELECTION];
+		
+	}	
+	/*
+	 NSLog(@"scrib start(%f,%f)", curPoint.x, curPoint.y);
+	 if (_aiff){
+	 [_aiff setCurrentFrameInRate:(curPoint.x)/([self bounds].size.width) scribStart:YES];
+	 }*/
+}
+
 - (void)drawRect:(NSRect)rect {
 
 	if ([self inLiveResize]){
@@ -144,12 +374,11 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	[[NSColor greenColor] set];
 	NSGraphicsContext *context = [NSGraphicsContext currentContext];
 	
-	//disable anti-alias(default anti aliased)
+	//disable anti-alias
 	//NSLog(@"current anti alias state = %d", [context shouldAntialias]);
 	[context setShouldAntialias:NO];
-	
 
-	//Make a transform
+
 	std::vector<float> *samples = [_aiff left];
 	if (!samples){
 		return;
@@ -173,24 +402,20 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	}
 	
 	NSRectFill(NSMakeRect(x,0,1,[self bounds].size.height));	
-}
-
-//set the cursor
-- (void)resetCursorRects{
-	NSRect rect = [self bounds];
-	NSCursor *cursor = [NSCursor IBeamCursor];
-	[self addCursorRect:rect cursor:cursor];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent{
-	NSLog(@"mouse down. click count = %ld", [theEvent clickCount]);
 	
-	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	NSLog(@"scrib start(%f,%f)", curPoint.x, curPoint.y);
-	if (_aiff){
-		[_aiff setCurrentFrameInRate:(curPoint.x)/([self bounds].size.width) scribStart:YES];
+	/////////////////////
+	//draw current selection rectangle
+	// see Apple's CompositLab example for more sophicicated color composite..
+	{
+		NSColor *selectionColor = [NSColor yellowColor];
+		selectionColor = [selectionColor colorWithAlphaComponent:0.5];
+		[selectionColor set];
 	}
+	NSRectFillUsingOperation([self selectionRect], NSCompositeSourceOver);
+	
 }
+
+
 
 - (void)mouseUp:(NSEvent *)theEvent{
 	NSLog(@"mouse up");

@@ -13,55 +13,29 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-
-typedef struct __range{
-	int begin;
-	int end;
-} range;
+#import "RangeX.h"
 
 @interface Aiff : NSObject {
 
 	//unsigned long _sampleCount;
 	NSString *_fileName;
 
-	
 	std::vector<float> _left;
     std::vector<float> _right;
 
-    
+    RangeX *_selection;
+	
 	unsigned long _currentFrame;
 	unsigned long _scribStartFrame;
 	Boolean _scrib;
-	id _observer;	//TODO: make observer to list
+	id _observer;
 	SEL _notify_selector;
 	
-	range selected_range;
-	
-	//DFT buffer
-    
-	/*
-	std::vector<signed short> _stlbuffer;
-	Boolean _useLowPass;
-	std::vector<signed short> _stlbuffer_lowpassed;
-
-	/
-	std::vector<std::complex<double> >_samples;
-	std::vector<std::complex<double> >_result;
-*/
 }
 
 - (void) loadFile: (NSString *)fileName;
 - (NSString *)fileName;
 
-
-/*
-//handling lowpass filter
-- (void)lowpass;
-- (void)setUseLowpass: (Boolean)useLowpass;
-
-//the buffer(whole)
-- (std::vector<signed short> *)stlbuffer;
-*/
 //the buffer(float left)
 -(std::vector<float> *) left;
 -(std::vector<float> *) right;
@@ -74,13 +48,11 @@ typedef struct __range{
 -(std::vector<std::complex<double> >)getDFTBuffer;
 -(std::vector<std::complex<double> >)getSlowFFTBuffer;
 -(std::vector<std::complex<double> >)getFastFFTBuffer;
-//-(std::vector<complex>)getFFTBuffer;
 
 //frame (position in sample) handling
 - (unsigned long) currentFrame;
 - (unsigned long) totalFrameCount;
 - (void) setCurrentFrameInRate: (float) rate scribStart:(Boolean)scribStart ;
-
 
 //observer
 - (void)observeFrameChange:(id) observer forSelector:(SEL) sel;
@@ -88,4 +60,6 @@ typedef struct __range{
 //
 - (Boolean) renderToBuffer:(UInt32)sampleCount left:(void *)pLeft right:(void *)pRight;  
 
+
+- (RangeX *)selection;
 @end	

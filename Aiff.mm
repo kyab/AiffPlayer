@@ -26,12 +26,7 @@ unsigned long swapByteOrderULong(unsigned long org){
 	
 	unsigned long ret = 0;
 	unsigned char *p = (unsigned char *)&ret;
-	/*
-	 ret = ((org & 0xFF000000) >> 24) | 
-	 ((org & 0x00FF0000) >> 8) | 
-	 ((org & 0x0000FF00) << 8 ) | 
-	 ((org & 0x000000FF) << 24);
-	 */
+
 	p[3] = (org & 0x000000FF);
 	p[2] = (org & 0x0000FF00) >> 8;
 	p[1] = (org & 0x00FF0000) >> 16;
@@ -54,23 +49,16 @@ signed short swapByteOrderShort(signed short org){
 	if(self){
 		
 		NSLog(@"init");
-		//_buffer_l = [[NSMutableArray alloc] init];
-	
+
 		_currentFrame = 0;
-		//_useLowPass = false;
 		_scrib = NO;
 		_observer = nil;
+		
+		_selection = [[RangeX alloc] init];
 	
-		/*typedef std::complex<float> complexf;
-	
-		_samples.assign(1024, complexf(0.0));
-		_result.assign(1024, complexf(0.0));
-		*/
-		//_left = _right = NULL;
 	}
 	
 	return self;
-	
 	
 }
 
@@ -79,18 +67,21 @@ signed short swapByteOrderShort(signed short org){
 	[super dealloc];
 }
 
+- (RangeX *)selection{
+	return _selection;
+}
+
 - (void) loadFile: (NSString *)fileName{
 	NSLog(@"%@",fileName);
 	
 	_currentFrame = 0;
 	_scribStartFrame = 0;
-	//_sampleCount = 0;
-	//_stlbuffer.clear();
-	//_stlbuffer_lowpassed.clear();
-	
+
 	_left.clear();
 	_right.clear();
-	//_useLowPass = false;
+
+	_selection.start = 0.0f;
+	_selection.end = 0.0f;
 	
 	printf("size of unsigned long=%ld\n", sizeof(unsigned long));
 	
@@ -236,10 +227,6 @@ signed short swapByteOrderShort(signed short org){
 	
 }
 
-/*
-- (NSMutableArray *)buffer{
-	return _buffer_l;
-}*/
 
 - (NSString *)fileName{
 	return _fileName;
@@ -284,13 +271,6 @@ signed short swapByteOrderShort(signed short org){
 	_scrib = b;
 }
 
-
-/*
-//break encupsulation
-- (std::vector<signed short> *)stlbuffer{
-	return _useLowPass ? &_stlbuffer_lowpassed : &_stlbuffer;
-}
-*/
 //also breaking encupsulation!
 -(std::vector<float> *) left{
 	return &_left;
@@ -300,38 +280,7 @@ signed short swapByteOrderShort(signed short org){
 	return &_right;
 }
 
-/*
-- (void)setUseLowpass:(Boolean)useLowpass{
-	_useLowPass = useLowpass;
-	if (_useLowPass){
-		if (_stlbuffer_lowpassed.size() == 0){
-			[self lowpass];
-		}
-	}
-}
- */
 
-/*
-//create simple lowpassed samples.
-- (void)lowpass{
-	_stlbuffer_lowpassed.clear();
-	
-	//super simple lowpass filter
-	for(UInt32 frame = 0; frame < _stlbuffer.size()/2; frame++){
-
-		UInt32 prev_frame = 0;
-		if (frame >10) {prev_frame = frame-10;}
-		
-		float sample_l = _stlbuffer[frame*2]*0.5 + _stlbuffer[prev_frame*2]*0.5;
-		float sample_r = _stlbuffer[frame*2+1]*0.5 + _stlbuffer[prev_frame*2+1]*0.5;
-		
-		_stlbuffer_lowpassed.push_back((signed short) (sample_l));
-		_stlbuffer_lowpassed.push_back((signed short) (sample_r));
-	}
-	NSLog(@"LOWPASS sample created");
-}
-
- */
 -(std::vector<std::complex<double> >)getSlowFFTBuffer{
 	//std::vector<signed short> &stlbuffer =  _useLowPass ? _stlbuffer_lowpassed : _stlbuffer;
 	//const int SHORT_MAX = 0xFFFF/2;

@@ -42,6 +42,7 @@
 		EB07052A1327E63B00BA0AFB /* Spectrum3DController.rb in Resources */ = {isa = PBXBuildFile; fileRef = EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */; };
 		EB07052F1327E69D00BA0AFB /* SpectrumView3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */; };
 		EB0705301327E69D00BA0AFB /* 3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB07052E1327E69D00BA0AFB /* 3d.mm */; };
+		EB0FBAE51358809A00B13381 /* RangeX.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0FBAE41358809A00B13381 /* RangeX.m */; };
 		EB1AFD0A12C53D16007C2648 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1AFD0912C53D16007C2648 /* JavaScriptCore.framework */; };
 		EB2F89A212FD92420038A3FE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB2F898112FD91470038A3FE /* main.cpp */; };
 		EB2F89B712FD952E0038A3FE /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8A22E312FC4F9D0001A9EA /* fft.cpp */; };
@@ -93,6 +94,8 @@
 		EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView3D.mm; sourceTree = "<group>"; };
 		EB07052D1327E69D00BA0AFB /* 3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3d.h; sourceTree = "<group>"; };
 		EB07052E1327E69D00BA0AFB /* 3d.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = 3d.mm; sourceTree = "<group>"; };
+		EB0FBAE31358809A00B13381 /* RangeX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeX.h; sourceTree = "<group>"; };
+		EB0FBAE41358809A00B13381 /* RangeX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RangeX.m; sourceTree = "<group>"; };
 		EB1AFD0912C53D16007C2648 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EB2F898012FD91470038A3FE /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		EB2F898112FD91470038A3FE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -148,6 +151,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */,
+				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
 				EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */,
 				EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */,
@@ -158,8 +163,8 @@
 				EB8A22E312FC4F9D0001A9EA /* fft.cpp */,
 				EB5FDD1F12D2FE5400B34D5A /* Aiff.h */,
 				EB5FDD2012D2FE5400B34D5A /* Aiff.mm */,
-				EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */,
-				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
+				EB0FBAE31358809A00B13381 /* RangeX.h */,
+				EB0FBAE41358809A00B13381 /* RangeX.m */,
 				EB62FDF412F6D973001F1B87 /* SpectrumView.h */,
 				EB62FDF512F6D973001F1B87 /* SpectrumView.mm */,
 				EB423EEB12D5D8B2009069BF /* Legacy */,
@@ -413,6 +418,7 @@
 				EB8A22E412FC4F9D0001A9EA /* fft.cpp in Sources */,
 				EB07052F1327E69D00BA0AFB /* SpectrumView3D.mm in Sources */,
 				EB0705301327E69D00BA0AFB /* 3d.mm in Sources */,
+				EB0FBAE51358809A00B13381 /* RangeX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
