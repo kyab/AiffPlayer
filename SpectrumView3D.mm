@@ -46,6 +46,8 @@ static const int SPECTRUM3D_COUNT = 40;
 	_aiff = aiff;
 
 	[self setNeedsDisplay:YES];
+	
+	/*
 	//TODO: manage timer instance, timer should initialized. only if there are no timer
 	NSTimer *timer = [NSTimer timerWithTimeInterval:1.0f/10
 									 target:self
@@ -56,7 +58,7 @@ static const int SPECTRUM3D_COUNT = 40;
 	[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];
 	
 	//fire the timer even while mouse tracking!
-	[runLoop addTimer:timer forMode:NSEventTrackingRunLoopMode];
+	[runLoop addTimer:timer forMode:NSEventTrackingRunLoopMode];*/
 }
 
 - (void)ontimer:(NSTimer *)timer {

@@ -195,8 +195,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	
 	//draw fake small selection before actual dragging, for new selection mode.
 	if (mode == DRAGMODE_NEWSELECTION){
+		[_aiff willChangeValueForKey:@"selection"];
 		_aiff.selection.start = 100.0f * startPoint.x / self.bounds.size.width;
 		_aiff.selection.end = _aiff.selection.start + 0.1f;
+		[_aiff didChangeValueForKey:@"selection"];
 	}
 	
 	_highLight = true;
@@ -227,6 +229,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 		
 		switch([event type]){
 			case NSLeftMouseDragged:
+				
+				//notify observers to selection has changed
+				[_aiff willChangeValueForKey:@"selection"];
+				
 				switch (mode){
 					case DRAGMODE_NEWSELECTION:
 					{
@@ -247,6 +253,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 						break;
 					case DRAGMODE_DRAGAREA:
 					{
+						
 						RangeX *selection = _aiff.selection;
 						
 						float offset = [self percentFromPixelX:(newPoint.x - prevPoint.x)];
@@ -267,6 +274,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 							[selection offset:offset];
 							prevPoint = newPoint;
 						}
+						
 						
 					}
 						break;
@@ -320,6 +328,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 					default:
 						break;
 				}
+				[_aiff didChangeValueForKey:@"selection"];
 				[self setNeedsDisplay:YES];
 				break;
 			case NSLeftMouseUp:

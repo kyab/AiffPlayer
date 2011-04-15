@@ -49,6 +49,7 @@
 		EB5FDD2312D2FE5400B34D5A /* Aiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB5FDD2012D2FE5400B34D5A /* Aiff.mm */; };
 		EB5FDD2412D2FE5400B34D5A /* ieee.c in Sources */ = {isa = PBXBuildFile; fileRef = EB5FDD2112D2FE5400B34D5A /* ieee.c */; };
 		EB62FDF612F6D973001F1B87 /* SpectrumView.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB62FDF512F6D973001F1B87 /* SpectrumView.mm */; };
+		EB6F83F61358DEFE007E0228 /* PercentStringTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = EB6F83F51358DEFE007E0228 /* PercentStringTransformer.m */; };
 		EB8A22E412FC4F9D0001A9EA /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8A22E312FC4F9D0001A9EA /* fft.cpp */; };
 		EB90B1CC12DA34EC00A44013 /* WholeViewObjC.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */; };
 		EB93A5AF12C34CBD0053A09C /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB93A5AE12C34CBD0053A09C /* CoreAudioKit.framework */; };
@@ -106,6 +107,8 @@
 		EB5FDD2212D2FE5400B34D5A /* ieee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ieee.h; sourceTree = "<group>"; };
 		EB62FDF412F6D973001F1B87 /* SpectrumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumView.h; sourceTree = "<group>"; };
 		EB62FDF512F6D973001F1B87 /* SpectrumView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView.mm; sourceTree = "<group>"; };
+		EB6F83F41358DEFE007E0228 /* PercentStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lineEnding = 0; path = PercentStringTransformer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		EB6F83F51358DEFE007E0228 /* PercentStringTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PercentStringTransformer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		EB8A22E212FC4F9D0001A9EA /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
 		EB8A22E312FC4F9D0001A9EA /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WholeViewObjC.h; sourceTree = "<group>"; };
@@ -173,6 +176,8 @@
 				EBB1B78112BB385A00E07FD0 /* AUProcessor.h */,
 				EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */,
 				EBB6F8DC12E20CAA00DE75FB /* MainView.rb */,
+				EB6F83F41358DEFE007E0228 /* PercentStringTransformer.h */,
+				EB6F83F51358DEFE007E0228 /* PercentStringTransformer.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -419,6 +424,7 @@
 				EB07052F1327E69D00BA0AFB /* SpectrumView3D.mm in Sources */,
 				EB0705301327E69D00BA0AFB /* 3d.mm in Sources */,
 				EB0FBAE51358809A00B13381 /* RangeX.m in Sources */,
+				EB6F83F61358DEFE007E0228 /* PercentStringTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
