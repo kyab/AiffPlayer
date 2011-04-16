@@ -40,6 +40,9 @@
 -(std::vector<float> *) left;
 -(std::vector<float> *) right;
 
+-(float)foo;
+-(void)setFoo:(float)val;
+
 
 //scrib playback support
 - (Boolean)scrib;
@@ -48,6 +51,8 @@
 -(std::vector<std::complex<double> >)getDFTBuffer;
 -(std::vector<std::complex<double> >)getSlowFFTBuffer;
 -(std::vector<std::complex<double> >)getFastFFTBuffer;
+
+-(void)fastFFTForFrame:(UInt32)frame toBuffer:(std::vector<std::complex<double> > &)buffer size:(int)size;
 
 //frame (position in sample) handling
 - (unsigned long) currentFrame;

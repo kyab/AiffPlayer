@@ -92,7 +92,7 @@
 		EB0705271327E61500BA0AFB /* Spectrum3D.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Spectrum3D.xib; sourceTree = "<group>"; };
 		EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Spectrum3DController.rb; sourceTree = "<group>"; };
 		EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumView3D.h; sourceTree = "<group>"; };
-		EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView3D.mm; sourceTree = "<group>"; };
+		EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = SpectrumView3D.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		EB07052D1327E69D00BA0AFB /* 3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3d.h; sourceTree = "<group>"; };
 		EB07052E1327E69D00BA0AFB /* 3d.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = 3d.mm; sourceTree = "<group>"; };
 		EB0FBAE31358809A00B13381 /* RangeX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeX.h; sourceTree = "<group>"; };
@@ -101,18 +101,18 @@
 		EB2F898012FD91470038A3FE /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		EB2F898112FD91470038A3FE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		EB2F899D12FD920A0038A3FE /* testfft2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testfft2; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB5FDD1F12D2FE5400B34D5A /* Aiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Aiff.h; sourceTree = "<group>"; };
-		EB5FDD2012D2FE5400B34D5A /* Aiff.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Aiff.mm; sourceTree = "<group>"; };
+		EB5FDD1F12D2FE5400B34D5A /* Aiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Aiff.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		EB5FDD2012D2FE5400B34D5A /* Aiff.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = Aiff.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		EB5FDD2112D2FE5400B34D5A /* ieee.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ieee.c; sourceTree = "<group>"; };
 		EB5FDD2212D2FE5400B34D5A /* ieee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ieee.h; sourceTree = "<group>"; };
 		EB62FDF412F6D973001F1B87 /* SpectrumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumView.h; sourceTree = "<group>"; };
 		EB62FDF512F6D973001F1B87 /* SpectrumView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView.mm; sourceTree = "<group>"; };
-		EB6F83F41358DEFE007E0228 /* PercentStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lineEnding = 0; path = PercentStringTransformer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		EB6F83F41358DEFE007E0228 /* PercentStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PercentStringTransformer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		EB6F83F51358DEFE007E0228 /* PercentStringTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PercentStringTransformer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		EB8A22E212FC4F9D0001A9EA /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
 		EB8A22E312FC4F9D0001A9EA /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WholeViewObjC.h; sourceTree = "<group>"; };
-		EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WholeViewObjC.mm; sourceTree = "<group>"; };
+		EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = WholeViewObjC.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		EB93A5AE12C34CBD0053A09C /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
 		EB93A5CB12C34D530053A09C /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		EBB1B75D12BB368300E07FD0 /* Controller.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Controller.rb; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 		EBD0F6B512D5BF1A00CF6B7B /* util.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = util.mm; sourceTree = "<group>"; };
 		EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinGenerator.h; sourceTree = "<group>"; };
 		EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SinGenerator.mm; sourceTree = "<group>"; };
-		EBF5D61712C5A85E00AD3C6C /* RUtil.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = RUtil.rb; sourceTree = "<group>"; };
+		EBF5D61712C5A85E00AD3C6C /* RUtil.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; lineEnding = 0; path = RUtil.rb; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EBFEE11412BFA09600061CF6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 

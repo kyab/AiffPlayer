@@ -69,7 +69,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 
 	[self setNeedsDisplayInRect:rectToRedraw];
 	//[self displayRect:rectToRedraw];
-	//NSLog(@"foo");
+	//NSLog(@"selection");
 	
 	//だめだー、これだけだと以前の再生カーソルが消えない場合がある。レイヤー表示とか使うべきなの？
 }
@@ -254,6 +254,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 					case DRAGMODE_DRAGAREA:
 					{
 						
+						//[_aiff willChangeValueForKey:@"selection"];
 						RangeX *selection = _aiff.selection;
 						
 						float offset = [self percentFromPixelX:(newPoint.x - prevPoint.x)];
@@ -274,7 +275,7 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 							[selection offset:offset];
 							prevPoint = newPoint;
 						}
-						
+						//[_aiff didChangeValueForKey:@"selection"];
 						
 					}
 						break;

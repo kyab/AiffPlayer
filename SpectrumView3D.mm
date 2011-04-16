@@ -59,10 +59,28 @@ static const int SPECTRUM3D_COUNT = 40;
 	
 	//fire the timer even while mouse tracking!
 	[runLoop addTimer:timer forMode:NSEventTrackingRunLoopMode];*/
+
+	//regist to observer
+	[_aiff addObserver:self forKeyPath:@"selection" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+	
+	NSLog(@"Spectrum3D observe change of selection : %@", keyPath);
+	if ([keyPath isEqual:@"selection"]){
+
+		float start = [[_aiff selection] end];
+		float end = [[_aiff selection] end];
+		NSLog(@"change detected. start = %f, end = %f", start, end);
+		[self setNeedsDisplay:YES];
+		return;
+	}
+	
+	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (void)ontimer:(NSTimer *)timer {
-	[self setNeedsDisplay:YES];
+	//[self setNeedsDisplay:YES];
 }
 
 //camera -> screen
@@ -219,6 +237,7 @@ static const int SPECTRUM3D_COUNT = 40;
 	//draw spectrum(s).
 	
 	if (_enabled){
+		/*
 		if (_spectrums.size() > SPECTRUM3D_COUNT){
 			_spectrums.pop_front();
 		}
@@ -242,7 +261,23 @@ static const int SPECTRUM3D_COUNT = 40;
 				}
 			}
 			fastForwardFFT(&buffer[0], FFT_SIZE, &(spectrum[0]));
+		}*/
+		
+		_spectrums.clear();
+		for(int i = 0; i < SPECTRUM3D_COUNT; i++){
+			_spectrums.push_back(Spectrum(FFT_SIZE,0.0));
 		}
+		
+		//0.0 to 1.0
+		RangeX *selection = [_aiff selection];
+		float start = selection.start / 100.0f;
+		float width = selection.end / 100.0f - start;
+		float rate = width / SPECTRUM3D_COUNT;
+		for (int i = 0; i < SPECTRUM3D_COUNT; i++){
+			UInt32 frame = (UInt32) ([_aiff totalFrameCount] * (start + i*rate));
+			[_aiff fastFFTForFrame:frame toBuffer:_spectrums[i] size:FFT_SIZE];
+		}
+		
 		
 		for(int index = 0; index < _spectrums.size(); index++){
 			[self drawSpectrum:_spectrums[index] index:index];

@@ -256,7 +256,7 @@ signed short swapByteOrderShort(signed short org){
 }
 
 - (unsigned long) totalFrameCount{
-	return _left.size() / 2;
+	return _left.size();
 }
 
 - (Boolean)scrib{
@@ -325,6 +325,22 @@ signed short swapByteOrderShort(signed short org){
 	return result;
 }
 
+
+-(void)fastFFTForFrame:(UInt32)frame 
+			  toBuffer:(std::vector<std::complex<double> > &)buffer 
+				  size:(int)size{
+	
+	
+	//first naive implementation.
+	std::vector<std::complex<double> >samples;
+	samples.assign(size,0.0);
+	buffer.assign(size,0.0);
+	for (int i = 0; i < size; i++){
+		samples[i] = (double)_left[frame + i];
+	}
+	fastForwardFFT(&samples[0],size,&buffer[0]);
+	
+}
 
 
 //DFTの実装。メインループで300ms程度(debug)かかっている。double版にしても290ms程度
@@ -417,6 +433,13 @@ signed short swapByteOrderShort(signed short org){
 - (void)observeFrameChange:(id) observer forSelector:(SEL) sel{
 	_observer = observer;
 	_notify_selector = sel;
+}
+
+-(float)foo{
+	return 0.0f;
+}
+-(void)setFoo:(float)val{
+	;
 }
 
 @end
