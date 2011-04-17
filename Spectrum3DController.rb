@@ -8,7 +8,7 @@ class Spectrum3DWindowController < NSWindowController
 	attr_accessor :view
 	attr_accessor :aiff
 	def awakeFromNib
-		
+		NSLog "#{Spectrum3DWindowController} awaked from nib"
 	end 
 	
 	def init

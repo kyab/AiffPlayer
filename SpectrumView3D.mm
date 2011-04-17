@@ -19,7 +19,7 @@
 #import "3d.h"
 
 
-static const int FFT_SIZE = 256 * 4;
+static const int FFT_SIZE = 256 * 8;
 static const int SPECTRUM3D_COUNT = 40;
 
 //world corrdinate is basically [-100 100] for x,y, and z
@@ -27,7 +27,7 @@ static const int SPECTRUM3D_COUNT = 40;
 @implementation SpectrumView3D
 
 @synthesize rotateX = _rotateX,rotateY = _rotateY, rotateZ = _rotateZ;
-@synthesize enabled = _enabled, log = _log;
+@synthesize enabled = _enabled;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -37,31 +37,15 @@ static const int SPECTRUM3D_COUNT = 40;
 		_rotateY = -40;//-40;
 		_rotateZ = 0;
 		_enabled = YES;
-		_log = NO;
+		_log = YES;
 								 
     }
     return self;
 }
 - (void)setAiff:(Aiff *)aiff{
 	_aiff = aiff;
-
-	[self setNeedsDisplay:YES];
-	
-	/*
-	//TODO: manage timer instance, timer should initialized. only if there are no timer
-	NSTimer *timer = [NSTimer timerWithTimeInterval:1.0f/10
-									 target:self
-								   selector: @selector(ontimer:)
-								   userInfo:nil
-									repeats:true];
-	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-	[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];
-	
-	//fire the timer even while mouse tracking!
-	[runLoop addTimer:timer forMode:NSEventTrackingRunLoopMode];*/
-
-	//regist to observer
 	[_aiff addObserver:self forKeyPath:@"selection" options:NSKeyValueObservingOptionNew context:NULL];
+	[self setNeedsDisplay:YES];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
@@ -77,10 +61,6 @@ static const int SPECTRUM3D_COUNT = 40;
 	}
 	
 	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-}
-
-- (void)ontimer:(NSTimer *)timer {
-	//[self setNeedsDisplay:YES];
 }
 
 //camera -> screen
@@ -237,32 +217,6 @@ static const int SPECTRUM3D_COUNT = 40;
 	//draw spectrum(s).
 	
 	if (_enabled){
-		/*
-		if (_spectrums.size() > SPECTRUM3D_COUNT){
-			_spectrums.pop_front();
-		}
-		_spectrums.push_back(Spectrum(FFT_SIZE,0.0));
-		
-		{
-			Spectrum &spectrum = _spectrums.back();
-			vector<complex<double> > buffer = vector<complex<double> >(FFT_SIZE, 0.0);
-			const vector<float> *left = [_aiff left];
-			
-			if ((left == NULL) || (left->size() < FFT_SIZE)){
-				//NSLog(@"not enough samples to get FFT");
-				return;
-			}
-			
-			//get the fft of latest FFT_SIZE samples.
-			@synchronized( _aiff ){
-				int offset = left->size() - FFT_SIZE;
-				for (int i = 0 ; i < FFT_SIZE; i++){
-					buffer[i] = (*left)[i + offset];
-				}
-			}
-			fastForwardFFT(&buffer[0], FFT_SIZE, &(spectrum[0]));
-		}*/
-		
 		_spectrums.clear();
 		for(int i = 0; i < SPECTRUM3D_COUNT; i++){
 			_spectrums.push_back(Spectrum(FFT_SIZE,0.0));
@@ -297,5 +251,15 @@ static const int SPECTRUM3D_COUNT = 40;
 	[self drawText:@"freq(z)" atPoint:Point3D(0,0,100)];
 	
 }
+
+- (void)setLog:(Boolean)log{
+	_log = log;
+	[self setNeedsDisplay:YES];
+}
+
+-(Boolean)log{
+	return _log;
+}
+
 
 @end

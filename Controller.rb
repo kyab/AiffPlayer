@@ -7,12 +7,14 @@
 framework "CoreAudio"
 
 class Controller
-	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename, :check_lowpass;
+	attr_accessor :label_freq,:slider_freq,:wave_view, :label_filename
 	attr_accessor :start_btn, :stop_btn;
 	attr_accessor :state;
 	attr_accessor :window
 	
 	attr_accessor :spectrum_view;
+	
+	@spectrum3DWindowController;
 	
 	def awakeFromNib()
 		NSLog("The main Controller awaked from nib")
@@ -30,12 +32,13 @@ class Controller
 	
 	def applicationDidBecomeActive(notification)
 		puts "applicationDidBecomeActive"
-		@spectrum3DWindowController = Spectrum3DWindowController.alloc.init
-		@spectrum3DWindowController.showWindow(nil, @spectrum3DWindowController)
 	end
 	
 	def applicationDidFinishLaunching(notification)
 		puts "applicationDidFinishLaunching"
+		@spectrum3DWindowController = Spectrum3DWindowController.alloc.init
+		@spectrum3DWindowController.showWindow(nil, @spectrum3DWindowController)
+
 	end
 	#IB Actions
 	
@@ -73,7 +76,6 @@ class Controller
 	
 	#---
 	def loadAiff(file)
-		@check_lowpass.state = NSOffState
 		@auProcessor.loadAiff(file)
 		
 		@label_filename.stringValue = file
@@ -95,9 +97,9 @@ class Controller
 	end
 	
 	def ontimer(timer)
-		return if @state != :play
-		@wave_view.piriodicUpdate
-		@spectrum_view.setNeedsDisplay(true)
+		#return if @state != :play
+		#@wave_view.piriodicUpdate
+		#@spectrum_view.setNeedsDisplay(true)
 	end
 	
 	#delegation method
@@ -132,12 +134,9 @@ class Controller
 			pName = Pointer.new("c",256)
 			pSize = Pointer.new("I")
 			pSize.assign(256)
-			#p devID
-			
-			#AudioStreamBasicDescriptions
 			
 			r = AudioDeviceGetProperty(devID,0,0,KAudioDevicePropertyDeviceName, pSize,pName)
-			#p pSize[0]
+
 			name = String.new
 			(pSize[0]-1).times do |n|	#NULL文字も入ってくるので -1。
 				name << pName[n]
@@ -145,16 +144,8 @@ class Controller
 			puts "device - id:#{devID} name:#{name}"
 		end
 		
-		
-		#kAudioStreamPropertyAvailableVirtualFormats
 	end
-	
-	#freq slider handler (should use Cocoa-Bind)
-	def freq_slider_changed(sender)
-		@label_freq.stringValue = sender.intValue().to_s
-		@auProcessor.setFreq(sender.intValue)
-	end
-	
+
 
 end
 	
