@@ -975,7 +975,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="28112929"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{1e+13, 1e+13}</string>
 			</object>
 			<object class="NSCustomObject" id="154294876">
