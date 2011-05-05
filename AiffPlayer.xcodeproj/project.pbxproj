@@ -57,6 +57,12 @@
 		EBB1B75E12BB368300E07FD0 /* Controller.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBB1B75D12BB368300E07FD0 /* Controller.rb */; };
 		EBB1B78312BB385A00E07FD0 /* AUProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */; };
 		EBB6F8DD12E20CAA00DE75FB /* MainView.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBB6F8DC12E20CAA00DE75FB /* MainView.rb */; };
+		EBBE483B1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBBE483A1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm */; };
+		EBBE483D1372BE7D009F8B70 /* Spectrum3DOpenGL.xib in Resources */ = {isa = PBXBuildFile; fileRef = EBBE483C1372BE7D009F8B70 /* Spectrum3DOpenGL.xib */; };
+		EBBE483F1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBBE483E1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb */; };
+		EBBE48411372F3A2009F8B70 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBE48401372F3A2009F8B70 /* OpenGL.framework */; };
+		EBBE48431372F3B1009F8B70 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBE48421372F3B1009F8B70 /* GLUT.framework */; };
+		EBC4CB321372F90A00703275 /* NSColor_extention.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC4CB311372F90A00703275 /* NSColor_extention.m */; };
 		EBD0F6B612D5BF1A00CF6B7B /* util.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6B512D5BF1A00CF6B7B /* util.mm */; };
 		EBD0F6BB12D5C02000CF6B7B /* SinGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */; };
 		EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBF5D61712C5A85E00AD3C6C /* RUtil.rb */; };
@@ -119,6 +125,14 @@
 		EBB1B78112BB385A00E07FD0 /* AUProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AUProcessor.h; sourceTree = "<group>"; };
 		EBB1B78212BB385A00E07FD0 /* AUProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AUProcessor.mm; sourceTree = "<group>"; };
 		EBB6F8DC12E20CAA00DE75FB /* MainView.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = MainView.rb; sourceTree = "<group>"; };
+		EBBE48391372BE5B009F8B70 /* SpectrumView3DOpenGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpectrumView3DOpenGL.h; sourceTree = "<group>"; };
+		EBBE483A1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpectrumView3DOpenGL.mm; sourceTree = "<group>"; };
+		EBBE483C1372BE7D009F8B70 /* Spectrum3DOpenGL.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Spectrum3DOpenGL.xib; sourceTree = "<group>"; };
+		EBBE483E1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Spectrum3DOpenGLController.rb; sourceTree = "<group>"; };
+		EBBE48401372F3A2009F8B70 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		EBBE48421372F3B1009F8B70 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		EBC4CB301372F90200703275 /* NSColor_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_extention.h; sourceTree = "<group>"; };
+		EBC4CB311372F90A00703275 /* NSColor_extention.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_extention.m; sourceTree = "<group>"; };
 		EBD0F6B412D5BF1A00CF6B7B /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		EBD0F6B512D5BF1A00CF6B7B /* util.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = util.mm; sourceTree = "<group>"; };
 		EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinGenerator.h; sourceTree = "<group>"; };
@@ -132,6 +146,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBBE48431372F3B1009F8B70 /* GLUT.framework in Frameworks */,
+				EBBE48411372F3A2009F8B70 /* OpenGL.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				4DE3BE140D8651D900ECA448 /* MacRuby.framework in Frameworks */,
 				EBFEE11512BFA09600061CF6 /* AudioUnit.framework in Frameworks */,
@@ -154,12 +170,17 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EBC4CB311372F90A00703275 /* NSColor_extention.m */,
+				EBC4CB301372F90200703275 /* NSColor_extention.h */,
 				EB90B1CB12DA34EC00A44013 /* WholeViewObjC.mm */,
 				EB90B1CA12DA34E500A44013 /* WholeViewObjC.h */,
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
 				EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */,
 				EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */,
+				EBBE48391372BE5B009F8B70 /* SpectrumView3DOpenGL.h */,
+				EBBE483A1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm */,
 				EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */,
+				EBBE483E1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb */,
 				EB07052D1327E69D00BA0AFB /* 3d.h */,
 				EB07052E1327E69D00BA0AFB /* 3d.mm */,
 				EB8A22E212FC4F9D0001A9EA /* fft.h */,
@@ -185,6 +206,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EBBE48401372F3A2009F8B70 /* OpenGL.framework */,
 				4DE3BE130D8651D900ECA448 /* MacRuby.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
@@ -251,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				EB0705271327E61500BA0AFB /* Spectrum3D.xib */,
+				EBBE483C1372BE7D009F8B70 /* Spectrum3DOpenGL.xib */,
 				2BFA9DA510CDF852007972A1 /* MainMenu.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -261,6 +284,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EBBE48421372F3B1009F8B70 /* GLUT.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -373,6 +397,8 @@
 				EBB6F8DD12E20CAA00DE75FB /* MainView.rb in Resources */,
 				EB0705281327E61500BA0AFB /* Spectrum3D.xib in Resources */,
 				EB07052A1327E63B00BA0AFB /* Spectrum3DController.rb in Resources */,
+				EBBE483D1372BE7D009F8B70 /* Spectrum3DOpenGL.xib in Resources */,
+				EBBE483F1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +451,8 @@
 				EB0705301327E69D00BA0AFB /* 3d.mm in Sources */,
 				EB0FBAE51358809A00B13381 /* RangeX.m in Sources */,
 				EB6F83F61358DEFE007E0228 /* PercentStringTransformer.m in Sources */,
+				EBBE483B1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm in Sources */,
+				EBC4CB321372F90A00703275 /* NSColor_extention.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

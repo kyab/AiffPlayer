@@ -38,6 +38,8 @@ class Controller
 		puts "applicationDidFinishLaunching"
 		@spectrum3DWindowController = Spectrum3DWindowController.alloc.init
 		@spectrum3DWindowController.showWindow(nil, @spectrum3DWindowController)
+		@spectrum3DOpenGLWindowController = Spectrum3DOpenGLWindowController.alloc.init
+		@spectrum3DOpenGLWindowController.showWindow(nil, @spectrum3DOpenGLWindowController)
 
 	end
 	#IB Actions
@@ -87,7 +89,7 @@ class Controller
 									userInfo:nil,
 									repeats:true)
 		
-		[@wave_view, @spectrum_view,@spectrum3DWindowController].each do |view|
+		[@wave_view, @spectrum_view,@spectrum3DWindowController,@spectrum3DOpenGLWindowController].each do |view|
 			view.setAiff(@auProcessor.aiff)
 		end
 				
