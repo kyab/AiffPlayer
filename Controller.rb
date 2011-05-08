@@ -69,7 +69,7 @@ class Controller
 	end
 	
 	def load(sender)
-		loadAiff("/Users/koji/works/2011_02/m/sound_files/MilkeyWay.aif");
+		loadAiff("/Users/koji/works/2011_02/m/sound_files/songs/MilkeyWay.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/DrumnBossa.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange.aif");
 		#loadAiff("/Users/koji/work/m/sound_files/kaera_orange_short.aif");

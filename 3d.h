@@ -10,6 +10,9 @@
 #include <math.h>
 #import <Cocoa/Cocoa.h>
 
+void cross(const float *v1, const float *v2, float *result_vector);
+void norm_from_triangle(const float *v0, const float *v1, const float *v2, float *norm);
+
 float rad(float degree);
 
 class Point3D{

@@ -173,7 +173,7 @@ void logComponentDescription(Component comp, ComponentDescription *pDesc){
 		printf("FindNextComponent failed\n");
 		return;
 	}
-	
+
 	logComponentDescription(comp,&desc);
 	
 	OSStatus err = OpenAComponent(comp, &gOutputUnit);

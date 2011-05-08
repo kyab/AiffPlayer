@@ -42,12 +42,17 @@ static const int SPECTRUM3D_COUNT = 100;
 		_rotateX = 20;// 30;
 		_rotateY = -40;//-40;
 		_rotateZ = 0;
-		_enabled = YES;
+		_enabled = NO;
 		_log = YES;
 								 
     }
     return self;
 }
+
+- (void)awakeFromNib{
+	NSLog(@"SpectrumView3D, awaked from nib");
+}
+
 - (void)setAiff:(Aiff *)aiff{
 	_aiff = aiff;
 	[_aiff addObserver:self forKeyPath:@"selection" options:NSKeyValueObservingOptionNew context:NULL];
@@ -351,6 +356,10 @@ static const int SPECTRUM3D_COUNT = 100;
 
 - (void)setLog:(Boolean)log{
 	_log = log;
+	[self setNeedsDisplay:YES];
+}
+- (void)setEnabled:(Boolean)enabled{
+	_enabled = enabled;
 	[self setNeedsDisplay:YES];
 }
 

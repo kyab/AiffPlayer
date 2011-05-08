@@ -63,6 +63,7 @@
 		EBBE48411372F3A2009F8B70 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBE48401372F3A2009F8B70 /* OpenGL.framework */; };
 		EBBE48431372F3B1009F8B70 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBE48421372F3B1009F8B70 /* GLUT.framework */; };
 		EBC4CB321372F90A00703275 /* NSColor_extention.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC4CB311372F90A00703275 /* NSColor_extention.m */; };
+		EBC71E561376CA0F0047C135 /* glhelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBC71E541376CA0F0047C135 /* glhelper.mm */; };
 		EBD0F6B612D5BF1A00CF6B7B /* util.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6B512D5BF1A00CF6B7B /* util.mm */; };
 		EBD0F6BB12D5C02000CF6B7B /* SinGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */; };
 		EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBF5D61712C5A85E00AD3C6C /* RUtil.rb */; };
@@ -133,6 +134,8 @@
 		EBBE48421372F3B1009F8B70 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		EBC4CB301372F90200703275 /* NSColor_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_extention.h; sourceTree = "<group>"; };
 		EBC4CB311372F90A00703275 /* NSColor_extention.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_extention.m; sourceTree = "<group>"; };
+		EBC71E541376CA0F0047C135 /* glhelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = glhelper.mm; sourceTree = "<group>"; };
+		EBC71E551376CA0F0047C135 /* glhelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glhelper.h; sourceTree = "<group>"; };
 		EBD0F6B412D5BF1A00CF6B7B /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		EBD0F6B512D5BF1A00CF6B7B /* util.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = util.mm; sourceTree = "<group>"; };
 		EBD0F6B912D5C02000CF6B7B /* SinGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinGenerator.h; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				EB0FBAE41358809A00B13381 /* RangeX.m */,
 				EB62FDF412F6D973001F1B87 /* SpectrumView.h */,
 				EB62FDF512F6D973001F1B87 /* SpectrumView.mm */,
+				EBC71E541376CA0F0047C135 /* glhelper.mm */,
+				EBC71E551376CA0F0047C135 /* glhelper.h */,
 				EB423EEB12D5D8B2009069BF /* Legacy */,
 				EB423EE912D5D89F009069BF /* Utility */,
 				EB62FD8912F6B4BE001F1B87 /* Aiff_internal */,
@@ -453,6 +458,7 @@
 				EB6F83F61358DEFE007E0228 /* PercentStringTransformer.m in Sources */,
 				EBBE483B1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm in Sources */,
 				EBC4CB321372F90A00703275 /* NSColor_extention.m in Sources */,
+				EBC71E561376CA0F0047C135 /* glhelper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
