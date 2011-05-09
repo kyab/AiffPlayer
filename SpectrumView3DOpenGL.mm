@@ -170,7 +170,7 @@ static const int SPECTRUM3D_COUNT = 30;
 
 
 
--(void)drawLine{
+-(void)drawAxis{
 	[[NSColor blueColor] openGLColor4f];
 	glBegin(GL_LINES);{
 		glVertex3d(-1.0, 0, 0);
@@ -313,7 +313,7 @@ static const int SPECTRUM3D_COUNT = 30;
 		
 		});
 		[self drawSpectrums];
-		[self drawLine];
+		[self drawAxis];
 		
 
 	}glPopMatrix();
