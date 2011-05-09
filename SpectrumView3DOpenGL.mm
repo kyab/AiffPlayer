@@ -43,6 +43,7 @@ static const int SPECTRUM3D_COUNT = 30;
 
 @synthesize enabled = _enabled;
 @synthesize log = _log;
+@synthesize rotateByTrackball = _rotateByTrackball;
 
 //for view instances created in Interface Builder(except NSCustomView Proxy) 
 //initWithFrame not called. see: http://msyk.net/mdonline/msgbox/messageshow_54406.html
@@ -58,9 +59,21 @@ static const int SPECTRUM3D_COUNT = 30;
 
 -(void)awakeFromNib{
 	NSLog(@"OpenGL awake from nib");
-	_enabled = YES;
-	_log = YES;
+	
+	[self setEnabled:YES];
+	[self setLog:NO];
+	[self setRotateByTrackball:YES];
 	_aiff = nil;
+	
+	for (int i = 0 ; i < 4; i++){
+		_trackballRotation[i] = 0.0f;
+	}
+	
+	//initial rotation(trackball mode). copied from better looking values by NSLog("..", _worldRotation[0],,)
+	_worldRotation[0] =  72.94f;
+	_worldRotation[1] =  0.361f;
+	_worldRotation[2] = -0.902f;
+	_worldRotation[3] = -0.235f;
 	
 }
 
@@ -136,8 +149,8 @@ static const int SPECTRUM3D_COUNT = 30;
 		glGetFloatv(GL_MODELVIEW,m);
 	}glPopMatrix();
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 		
 	glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
@@ -282,24 +295,26 @@ static const int SPECTRUM3D_COUNT = 30;
 	glMatrixMode(GL_MODELVIEW);
 	
 	glPushMatrix();{
-
-		glMultMatrixf(m);
-		
-		
+		if (_rotateByTrackball){
+			glTranslatef(0.0, 0.0, 0.0);//more tweak should go here
+			glRotatef(_trackballRotation[0], _trackballRotation[1], _trackballRotation[2], _trackballRotation[3]);
+			glRotatef(_worldRotation[0], _worldRotation[1], _worldRotation[2], _worldRotation[3]);
+			
+		}else{
+			glMultMatrixf(m);
+		}
 		
 		glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 		GLwithLight(^(void){
-		
 			const GLfloat materialCol[] = {0,0,0.5,1};
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol);
-			
 			//[self drawSamplePlanes];
-			//glutSolidTeapot(0.5);
-
+			//glutSolidTeapot(0.3);
+		
 		});
-
-		[self drawLine];
 		[self drawSpectrums];
+		[self drawLine];
+		
 
 	}glPopMatrix();
 	
@@ -310,20 +325,58 @@ static const int SPECTRUM3D_COUNT = 30;
 
 #pragma mark ---- Mouse Handlings ----
 
-- (NSPoint)pointFromEvent:(NSEvent *)theEvent{
+- (NSPoint)locationFromEvent:(NSEvent *)theEvent{
 	return [self convertPoint:[theEvent locationInWindow] fromView:nil];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
 	NSLog(@"mouse down. click count = %ld", [theEvent clickCount]);
-	_mouseDragging = true;
-	_prevDragPoint = [self pointFromEvent:theEvent];
+	if (_rotateByTrackball){
+		NSPoint location = [self locationFromEvent:theEvent];
+		startTrackball(location.x, location.y, 0,0,self.bounds.size.width,self.bounds.size.height);
+	}else{
+		_mouseDragging = true;
+		_prevDragPoint = [self locationFromEvent:theEvent];
+	}
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent{
+	
+	if (_rotateByTrackball){
+		NSPoint location = [self locationFromEvent:theEvent];
+		rollToTrackball(location.x, location.y, _trackballRotation);
+		[self setNeedsDisplay:YES];
+	}else{
+		NSPoint curPoint = [self locationFromEvent:theEvent];
+		
+		if (_mouseDragging == false) return;
+		
+		float distanceX = curPoint.x -  _prevDragPoint.x;
+		float distanceY = curPoint.y -  _prevDragPoint.y;
+		float angleX = distanceX / self.bounds.size.width * 180;
+		float angleY = distanceY / self.bounds.size.height * 180;
+		
+		//NSLog(@"drag(%f,%f) distance = %f", curPoint.x, curPoint.y, distanceX);
+		[self addRotateY:angleX];
+		[self addRotateX:-angleY];
+		//[self rotate:3.0f forX:-angleY forY:angleX forZ:0];
+		_prevDragPoint = curPoint;
+	}
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
 	NSLog(@"mouse up");
-	_mouseDragging = false;
+	if (_rotateByTrackball){
+		addToRotationTrackball( _trackballRotation, _worldRotation);
+		for (int i = 0 ; i < 4; i++){
+			_trackballRotation[i] = 0.0f;
+		}
+		NSLog(@"current rotation = (%lf,%lf,%lf,%lf)", _worldRotation[0], _worldRotation[1], _worldRotation[2], _worldRotation[3]);
+	}else{
+		_mouseDragging = false;
+	}
 }
+
 
 
 /*needs setAcceptsMouseMovedEvents for window, to receive this event*/
@@ -332,56 +385,64 @@ static const int SPECTRUM3D_COUNT = 30;
 	NSLog(@"mouse moved");
 }
 
-
-- (void)mouseDragged:(NSEvent *)theEvent{
-	NSPoint curPoint = [self pointFromEvent:theEvent];
-	
-	if (_mouseDragging == false) return;
-	
-	float distanceX = curPoint.x -  _prevDragPoint.x;
-	float distanceY = curPoint.y -  _prevDragPoint.y;
-	float angleX = distanceX / self.bounds.size.width * 180;
-	float angleY = distanceY / self.bounds.size.height * 180;
-	
-	//NSLog(@"drag(%f,%f) distance = %f", curPoint.x, curPoint.y, distanceX);
-	[self addRotateY:angleX];
-	[self addRotateX:-angleY];
-	//[self rotate:3.0f forX:-angleY forY:angleX forZ:0];
-	_prevDragPoint = curPoint;
-	
-}
-
 - (void)rightMouseDown:(NSEvent *)theEvent{
 	NSLog(@"right mouse down. click count = %ld", [theEvent clickCount]);
-	_mouseDragging = true;
-	_prevDragPoint = [self pointFromEvent:theEvent];
+	if (_rotateByTrackball){
+		
+	}else{
+		_mouseDragging = true;
+		_prevDragPoint = [self locationFromEvent:theEvent];
+	}
 }
 
 - (void)rightMouseDragged:(NSEvent *)theEvent
 {
-	NSPoint curPoint = [self pointFromEvent:theEvent];
-	
-	if (_mouseDragging == false) return;
-	
-	float distanceX = curPoint.x -  _prevDragPoint.x;
-	float angleX = distanceX / self.bounds.size.width * 180;
-	
-	[self addRotateZ:angleX];
-	distanceX /= self.bounds.size.width;
-	//[self addShiftX:distanceX];
-	_prevDragPoint = curPoint;
+	if (_rotateByTrackball){
+		
+	}else{
+		NSPoint curPoint = [self locationFromEvent:theEvent];
+		
+		if (_mouseDragging == false) return;
+		
+		float distanceX = curPoint.x -  _prevDragPoint.x;
+		float angleX = distanceX / self.bounds.size.width * 180;
+		
+		[self addRotateZ:angleX];
+		distanceX /= self.bounds.size.width;
+		//[self addShiftX:distanceX];
+		_prevDragPoint = curPoint;
+	}
 }
 
 -(void)rightMouseUp:(NSEvent *)theEvent{
-	_mouseDragging = false;
+	if (_rotateByTrackball){
+		
+	}else{
+		_mouseDragging = false;
+	}
 }
 
 - (void)otherMouseDragged:(NSEvent *)theEvent
 {
-	NSLog(@"other");
+	//NSLog(@"other");
 	//[self mouseDragged: theEvent];
 }
 
+
+#pragma mark ---- Setter with redraw ----
+- (void)setRotateByTrackball:(Boolean)rotateByTrackball{
+	_rotateByTrackball = rotateByTrackball;
+	[self setNeedsDisplay:YES];
+}
+
+- (void)setLog:(Boolean)log{
+	_log = log;
+	[self setNeedsDisplay:YES];
+}
+- (void)setEnabled:(Boolean)enabled{
+	_enabled = enabled;
+	[self setNeedsDisplay:YES];
+}
 
 
 @end

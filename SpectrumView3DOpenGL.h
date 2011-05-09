@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+#import "trackball.h"
+
 #include <vector>
 #include <deque>
 #include <complex>
@@ -27,11 +29,16 @@ typedef std::vector<Dcomplex> Spectrum;
 	Boolean _enabled;
 	Boolean _log;
 	
+	Boolean _rotateByTrackball;	//
+	GLfloat _worldRotation[4];
+	GLfloat _trackballRotation[4];
+	
 }
 -(void)rotate:(float)angle forX:(float)x forY:(float)y forZ:(float)z;
 -(void)setAiff:(id)aiff;
 
 @property(assign)Boolean enabled;
 @property(assign)Boolean log;
+@property(assign)Boolean rotateByTrackball;
 
 @end

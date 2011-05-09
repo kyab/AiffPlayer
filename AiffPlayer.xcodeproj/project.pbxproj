@@ -68,6 +68,7 @@
 		EBD0F6BB12D5C02000CF6B7B /* SinGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */; };
 		EBF5D61812C5A85E00AD3C6C /* RUtil.rb in Resources */ = {isa = PBXBuildFile; fileRef = EBF5D61712C5A85E00AD3C6C /* RUtil.rb */; };
 		EBFEE11512BFA09600061CF6 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBFEE11412BFA09600061CF6 /* AudioUnit.framework */; };
+		EBFF09321378313900CC5A53 /* trackball.c in Sources */ = {isa = PBXBuildFile; fileRef = EBFF09311378313900CC5A53 /* trackball.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -142,6 +143,8 @@
 		EBD0F6BA12D5C02000CF6B7B /* SinGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SinGenerator.mm; sourceTree = "<group>"; };
 		EBF5D61712C5A85E00AD3C6C /* RUtil.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; lineEnding = 0; path = RUtil.rb; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EBFEE11412BFA09600061CF6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		EBFF09301378313200CC5A53 /* trackball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackball.h; sourceTree = "<group>"; };
+		EBFF09311378313900CC5A53 /* trackball.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trackball.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,8 +183,10 @@
 				EBB1B75D12BB368300E07FD0 /* Controller.rb */,
 				EB07052B1327E69D00BA0AFB /* SpectrumView3D.h */,
 				EB07052C1327E69D00BA0AFB /* SpectrumView3D.mm */,
-				EBBE48391372BE5B009F8B70 /* SpectrumView3DOpenGL.h */,
 				EBBE483A1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm */,
+				EBBE48391372BE5B009F8B70 /* SpectrumView3DOpenGL.h */,
+				EBFF09301378313200CC5A53 /* trackball.h */,
+				EBFF09311378313900CC5A53 /* trackball.c */,
 				EB0705291327E63B00BA0AFB /* Spectrum3DController.rb */,
 				EBBE483E1372BEC2009F8B70 /* Spectrum3DOpenGLController.rb */,
 				EB07052D1327E69D00BA0AFB /* 3d.h */,
@@ -459,6 +464,7 @@
 				EBBE483B1372BE5B009F8B70 /* SpectrumView3DOpenGL.mm in Sources */,
 				EBC4CB321372F90A00703275 /* NSColor_extention.m in Sources */,
 				EBC71E561376CA0F0047C135 /* glhelper.mm in Sources */,
+				EBFF09321378313900CC5A53 /* trackball.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
