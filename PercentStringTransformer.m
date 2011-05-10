@@ -24,13 +24,10 @@
 	
 	if (value == nil) return nil;
 	
-	NSLog(@"transformer");
 	float start = [(RangeX *)value start];
 	float end = [(RangeX *)value end];
 	
-	NSString *result = [NSString stringWithFormat:@"%0.2f%% to %0.2f%%" ,start, end];
-	
-	return result;
+	return [NSString stringWithFormat:@"%0.2f%% to %0.2f%%" ,start, end];
 }
 
 - (id)init

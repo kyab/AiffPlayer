@@ -12,6 +12,13 @@
 #import "3d.h"
 #import "glhelper.h"
 
+
+struct SimpleVertex3{
+	float x;
+	float y;
+	float z;
+};
+
 //lighting
 static const GLfloat materialAmbient[4] = {0.3, 0.2, 0.1, 1.};
 static const GLfloat materialDiffuse[4] = {0.6, 0.6, 0.6, 1.};
@@ -20,7 +27,7 @@ static const GLfloat materialShininess[4] = {30., 30., 80., 0.8};	//from 0 to 12
 static const GLfloat light0Ambient[4] = {0.9, 0.9, 0.9, 1.};	//光の当たらない部分の色(R,G,B,A) 光源から直接放射されるのではなく、周囲（環境）から一様に照らす光｡
 static const GLfloat light0Diffuse[4] = {0.9, 0.9, 0.9, 1.};	//光源そのものの色		 (R,G,B,A)
 static const GLfloat light0Specular[4] = {0.7, 0.7, 0.7, 1.};	//光の直接当たる部分の輝度 (R,G,B,A)
-static const GLfloat light0Position[4] = {-3., 3., 10., 1.};	//光源の位置
+static const GLfloat light0Position[4] = {10.0, 10.0, 10.0, 1.};	//光源の位置
 
 
 GLfloat m[16];
@@ -37,8 +44,8 @@ drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
 	}
 }
 
-static const int FFT_SIZE = 2048;
-static const int SPECTRUM3D_COUNT = 30;
+static const int FFT_SIZE = 256;
+static const int SPECTRUM3D_COUNT = 100;
 
 @implementation SpectrumView3DOpenGL
 
@@ -189,9 +196,9 @@ static const int SPECTRUM3D_COUNT = 30;
 
 	}glEnd();
 	
-	drawGLString(1.0, 0 ,0 , "x");
-	drawGLString(0, 1.0, 0,  "y");
-	drawGLString(0, 0, 1.0, "z");
+	drawGLString(1.0, 0 ,0 , "time");
+	drawGLString(0, 1.0, 0,  "dB");
+	drawGLString(0, 0, -1.0, "freq");
 }
 
 -(void)drawSamplePlanes{
@@ -236,8 +243,7 @@ static const int SPECTRUM3D_COUNT = 30;
 	glDisable(GL_NORMALIZE);
 }
 
--(void)drawSpectrums{
-	if (!_enabled) return;
+-(void)calculateSpectrums{
 	_spectrums.clear();
 	
 	for (int i = 0 ; i < SPECTRUM3D_COUNT; i++){
@@ -252,6 +258,92 @@ static const int SPECTRUM3D_COUNT = 30;
 		UInt32 frame = (UInt32)([_aiff totalFrameCount] * (start + i*rate));
 		[_aiff fastFFTForFrame:frame toBuffer:_spectrums[i] size:FFT_SIZE];
 	}
+
+}
+
+-(void)XYZFromSpectrum:(const Spectrum &)spectrum
+			spec_index:(int) spec_index
+			freq_index:(int) freq_index
+					x:(float *)pX 
+					 y:(float *)pY 
+					z:(float *)pZ{
+	float amp = abs(spectrum[freq_index])/spectrum.size();
+	float db = 20 * std::log10(amp);
+	if( db < -96.0) db = -96.0f;	//cutoff low values
+	
+	*pX/*time*/ = spec_index * 1.0 / _spectrums.size();
+	*pY/*value*/ = (db + 96.0) * 1.0/96.0;	//1 for 96db
+	*pZ/*freq*/ = freq_index * 1.0/(FFT_SIZE/2); 
+	
+	//tweaking
+	//time
+	*pX -= 0.5;	//centerize
+	*pX *= 1.9;	//scale
+	
+	//amp //visible tweak
+	*pY *= 0.5;
+	
+	//
+	*pZ *= -1.0;	//z- axis is upside-down for openGL
+	*pZ += 0.5;	//centerize;
+	*pZ *= 1.5;	//scale	
+}
+
+-(void)drawSpectrumMesh{
+	if (!_enabled) return;
+
+	//make vertex arrays
+	SimpleVertex3 points[_spectrums.size()][FFT_SIZE/2];
+	for (int sindex = 0; sindex < _spectrums.size(); sindex++){
+		for (int findex = 0; findex < FFT_SIZE/2; findex++){
+			[self XYZFromSpectrum:_spectrums[sindex]
+					   spec_index:sindex 
+					   freq_index:findex 
+								x:&(points[sindex][findex].x) 
+								y:&(points[sindex][findex].y) 
+								z:&(points[sindex][findex].z) ];
+		}
+	}
+	
+	//glShadeModel(GL_FLAT);
+	glEnable(GL_NORMALIZE);
+	for (int sindex = 0; sindex < _spectrums.size()-1; sindex++){
+		glBegin(GL_TRIANGLES);		//want use GL_TRIANGLE_STRIP..
+		
+		for(int findex = 0; findex < FFT_SIZE/2-1; findex++){
+			int s = sindex;
+			int f = findex;
+			
+			GLfloat norm[3];
+			GLfloat v1[3] = {points[s][f].x, points[s][f].y, points[s][f].z};
+			GLfloat v2[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
+			GLfloat v3[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
+			norm_from_triangle(v1,v2,v3,norm);
+			glNormal3fv(norm);
+			glVertex3fv(v1);
+			glVertex3fv(v2);
+			glVertex3fv(v3);
+			
+			GLfloat v4[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
+			GLfloat v5[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
+			GLfloat v6[3] = {points[s+1][f+1].x, points[s+1][f+1].y, points[s+1][f+1].z};
+			norm_from_triangle(v4,v5,v6,norm);
+			glNormal3fv(norm);
+			glVertex3fv(v4);
+			glVertex3fv(v5);
+			glVertex3fv(v6);
+			
+		}
+		glEnd();
+	}
+	glDisable(GL_NORMALIZE);
+	
+}
+
+-(void)drawSpectrums{
+	if (!_enabled) return;
+	
+	[self calculateSpectrums];
 	
 	for (int spectrum_index = 0; spectrum_index < _spectrums.size(); spectrum_index++){
 		Spectrum &spectrum = _spectrums[spectrum_index];
@@ -296,8 +388,12 @@ static const int SPECTRUM3D_COUNT = 30;
 	}else{
 		glDeleteLists(displayList_Spectrum,1);
 	}
+	
+	
 	glNewList(displayList_Spectrum, GL_COMPILE);{
+		
 		[self drawSpectrums];
+		//[self drawSpectrumMesh];
 	}glEndList();
 	
 }
@@ -312,6 +408,7 @@ static const int SPECTRUM3D_COUNT = 30;
 	glMatrixMode(GL_MODELVIEW);
 	
 	glPushMatrix();{
+		glLightfv(GL_LIGHT0, GL_POSITION, light0Position);	//fixed light //seemds needs more light
 		if (_rotateByTrackball){
 			glTranslatef(0.0, 0.0, 0.0);//more tweak should go here
 			glRotatef(_trackballRotation[0], _trackballRotation[1], _trackballRotation[2], _trackballRotation[3]);
@@ -321,16 +418,22 @@ static const int SPECTRUM3D_COUNT = 30;
 			glMultMatrixf(m);
 		}
 		
-		glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
+		//glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
 		GLwithLight(^(void){
-			const GLfloat materialCol[] = {0,0,0.5,1};
+			const GLfloat materialCol[] = {0.2,0.2,0.5,1};
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol);
 			//[self drawSamplePlanes];
-			//glutSolidTeapot(0.3);
+			glPushMatrix();{
+				glTranslated(0,0.4,-0.4);
+				glutSolidTeapot(0.1);
+			}glPopMatrix();
+			
+			const GLfloat materialCol2[] = {0.7,0.3,0.0,1};
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol2);
+			[self drawSpectrumMesh];
 		
 		});
-		//[self drawSpectrums];
-		glCallList(displayList_Spectrum);
+		//glCallList(displayList_Spectrum);
 		[self drawAxis];
 		
 
