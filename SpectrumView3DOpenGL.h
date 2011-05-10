@@ -37,8 +37,13 @@ typedef std::vector<Dcomplex> Spectrum;
 -(void)rotate:(float)angle forX:(float)x forY:(float)y forZ:(float)z;
 -(void)setAiff:(id)aiff;
 
+
 @property(assign)Boolean enabled;
 @property(assign)Boolean log;
 @property(assign)Boolean rotateByTrackball;
 
+@end
+
+@interface SpectrumView3DOpenGL (privates)
+-(void)compileSpectrumsToDisplayList;
 @end

@@ -24,6 +24,7 @@ static const GLfloat light0Position[4] = {-3., 3., 10., 1.};	//光源の位置
 
 
 GLfloat m[16];
+static GLuint displayList_Spectrum = 1;
 void
 drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
 {
@@ -109,13 +110,16 @@ static const int SPECTRUM3D_COUNT = 30;
 -(void)setAiff:(id)aiff{
 	_aiff = aiff;
 	[_aiff addObserver:self forKeyPath:@"selection" options:NSKeyValueObservingOptionNew context:NULL];
+	
+	[self compileSpectrumsToDisplayList];
 	[self setNeedsDisplay:YES];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
 	
 	if ([keyPath isEqual:@"selection"]){
-		NSLog(@"Spectrum3D(OpenGL) observe change of selection : %@", keyPath);
+		NSLog(@"Spectrum3D(OpenGL) observe change of selection");
+		[self compileSpectrumsToDisplayList];
 		[self setNeedsDisplay:YES];
 		return;
 	}
@@ -166,6 +170,7 @@ static const int SPECTRUM3D_COUNT = 30;
 	glEnable(GL_LIGHT0);
 	
 	
+	[self compileSpectrumsToDisplayList];
 }
 
 
@@ -281,12 +286,24 @@ static const int SPECTRUM3D_COUNT = 30;
 		}
 		glEnd();
 	}
-	
+	NSLog(@"Spectrum drawed");
+}
+
+-(void)compileSpectrumsToDisplayList{
+	static bool firstCall = true;
+	if (firstCall){
+		firstCall = false;
+	}else{
+		glDeleteLists(displayList_Spectrum,1);
+	}
+	glNewList(displayList_Spectrum, GL_COMPILE);{
+		[self drawSpectrums];
+	}glEndList();
 	
 }
 
+
 -(void)drawRect:(NSRect)dirtyRect{
-	NSLog(@"OpenGL: drawRect");
 	
 	[[NSColor blackColor] openGLClearColor];
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -312,7 +329,8 @@ static const int SPECTRUM3D_COUNT = 30;
 			//glutSolidTeapot(0.3);
 		
 		});
-		[self drawSpectrums];
+		//[self drawSpectrums];
+		glCallList(displayList_Spectrum);
 		[self drawAxis];
 		
 
@@ -330,7 +348,7 @@ static const int SPECTRUM3D_COUNT = 30;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-	NSLog(@"mouse down. click count = %ld", [theEvent clickCount]);
+
 	if (_rotateByTrackball){
 		NSPoint location = [self locationFromEvent:theEvent];
 		startTrackball(location.x, location.y, 0,0,self.bounds.size.width,self.bounds.size.height);
@@ -386,7 +404,6 @@ static const int SPECTRUM3D_COUNT = 30;
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent{
-	NSLog(@"right mouse down. click count = %ld", [theEvent clickCount]);
 	if (_rotateByTrackball){
 		
 	}else{
