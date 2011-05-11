@@ -28,6 +28,7 @@ typedef std::vector<Dcomplex> Spectrum;
 	
 	Boolean _enabled;
 	Boolean _log;
+	Boolean _smooth;
 	
 	Boolean _rotateByTrackball;	//
 	GLfloat _worldRotation[4];
@@ -41,9 +42,11 @@ typedef std::vector<Dcomplex> Spectrum;
 @property(assign)Boolean enabled;
 @property(assign)Boolean log;
 @property(assign)Boolean rotateByTrackball;
+@property(assign)Boolean smooth;
 
 @end
 
 @interface SpectrumView3DOpenGL (privates)
 -(void)compileSpectrumsToDisplayList;
+-(void)resetWorldRotaion;
 @end

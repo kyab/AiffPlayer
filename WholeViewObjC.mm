@@ -87,12 +87,11 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	[_wavepath setLineWidth:1.0f];
 	//[_wavepath setLineCapStyle:NSRoundLineCapStyle];
 	
-	std::vector <float >*samples = [_aiff right];
+	std::vector <float >*samples = [_aiff left];
 	NSLog(@"recreateWavePath2 count=%lu", samples->size());
 	
 	[_wavepath moveToPoint:NSMakePoint(0, (*samples)[0])];
 	
-	//const int SHORT_MAX = 0xFFFF/2;
 	float y_addition = bounds.size.height / 2.0f;
 	float y_ratio = (bounds.size.height)/2.0f;
 	
@@ -408,10 +407,10 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 	unsigned long totalFrameCount = [_aiff totalFrameCount];
 	float x = 0.0f;
 	if (totalFrameCount > 0){
-		x = ([self bounds].size.width) * currentFrame/totalFrameCount;
+		x = (float)currentFrame/totalFrameCount * self.bounds.size.width;
 	}
 	
-	NSRectFill(NSMakeRect(x,0,1,[self bounds].size.height));	
+	NSRectFill(NSMakeRect(x,0,1,self.bounds.size.height));	
 	
 	/////////////////////
 	//draw current selection rectangle

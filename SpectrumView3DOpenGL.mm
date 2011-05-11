@@ -13,21 +13,16 @@
 #import "glhelper.h"
 
 
-struct SimpleVertex3{
-	float x;
-	float y;
-	float z;
-};
 
 //lighting
-static const GLfloat materialAmbient[4] = {0.3, 0.2, 0.1, 1.};
-static const GLfloat materialDiffuse[4] = {0.6, 0.6, 0.6, 1.};
-static const GLfloat materialSpecular[4] = {1., 0.9, 0.9, 1.};
-static const GLfloat materialShininess[4] = {30., 30., 80., 0.8};	//from 0 to 128
+static const GLfloat materialAmbient[4] = {0.3, 0.2, 0.3, 1.};
+static const GLfloat materialDiffuse[4] = {0.9, 0.6, 0.6, 1.};
+static const GLfloat materialSpecular[4] = {0.5, 0.6, 0.6, 1.};
+static const GLfloat materialShininess[4] = {30., 30., 30., 0.8};	//from 0 to 128
 static const GLfloat light0Ambient[4] = {0.9, 0.9, 0.9, 1.};	//光の当たらない部分の色(R,G,B,A) 光源から直接放射されるのではなく、周囲（環境）から一様に照らす光｡
 static const GLfloat light0Diffuse[4] = {0.9, 0.9, 0.9, 1.};	//光源そのものの色		 (R,G,B,A)
 static const GLfloat light0Specular[4] = {0.7, 0.7, 0.7, 1.};	//光の直接当たる部分の輝度 (R,G,B,A)
-static const GLfloat light0Position[4] = {10.0, 10.0, 10.0, 1.};	//光源の位置
+static const GLfloat light0Position[4] = {0.0, 5.0, 10.0, 1.};	//光源の位置
 
 
 GLfloat m[16];
@@ -45,13 +40,14 @@ drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
 }
 
 static const int FFT_SIZE = 256;
-static const int SPECTRUM3D_COUNT = 100;
+static const int SPECTRUM3D_COUNT = 500;
 
 @implementation SpectrumView3DOpenGL
 
 @synthesize enabled = _enabled;
 @synthesize log = _log;
 @synthesize rotateByTrackball = _rotateByTrackball;
+@synthesize smooth = _smooth;
 
 //for view instances created in Interface Builder(except NSCustomView Proxy) 
 //initWithFrame not called. see: http://msyk.net/mdonline/msgbox/messageshow_54406.html
@@ -71,20 +67,45 @@ static const int SPECTRUM3D_COUNT = 100;
 	[self setEnabled:YES];
 	[self setLog:NO];
 	[self setRotateByTrackball:YES];
+	[self setSmooth:YES];
 	_aiff = nil;
 	
 	for (int i = 0 ; i < 4; i++){
 		_trackballRotation[i] = 0.0f;
 	}
 	
+	[self resetWorldRotation];
+	
+}
+
+-(void)resetWorldRotation{
 	//initial rotation(trackball mode). copied from better looking values by NSLog("..", _worldRotation[0],,)
 	_worldRotation[0] =  72.94f;
 	_worldRotation[1] =  0.361f;
 	_worldRotation[2] = -0.902f;
-	_worldRotation[3] = -0.235f;
-	
+	_worldRotation[3] = -0.235f;	
 }
 
+// ---------------------------------
+
+- (BOOL)acceptsFirstResponder
+{
+	return YES;
+}
+
+// ---------------------------------
+
+- (BOOL)becomeFirstResponder
+{
+	return  YES;
+}
+
+// ---------------------------------
+
+- (BOOL)resignFirstResponder
+{
+	return YES;
+}
 
 -(void)addRotateZ:(float) angle{
 	[self rotate:angle forX:0.0 forY:0.0 forZ:1.0];
@@ -152,7 +173,7 @@ static const int SPECTRUM3D_COUNT = 100;
 
 -(void)prepareOpenGL{
 	
-	
+	//save matrix(for non-trackball)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();{
 		glLoadIdentity();
@@ -163,6 +184,7 @@ static const int SPECTRUM3D_COUNT = 100;
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
 		
+	//set up lighting parameter
 	glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
@@ -176,7 +198,8 @@ static const int SPECTRUM3D_COUNT = 100;
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light0Specular);
 	glEnable(GL_LIGHT0);
 	
-	
+
+	//initial display list compilation
 	[self compileSpectrumsToDisplayList];
 }
 
@@ -292,6 +315,8 @@ static const int SPECTRUM3D_COUNT = 100;
 -(void)drawSpectrumMesh{
 	if (!_enabled) return;
 
+	bool bUsePlaneVector = false;
+	
 	//make vertex arrays
 	SimpleVertex3 points[_spectrums.size()][FFT_SIZE/2];
 	for (int sindex = 0; sindex < _spectrums.size(); sindex++){
@@ -305,7 +330,34 @@ static const int SPECTRUM3D_COUNT = 100;
 		}
 	}
 	
-	//glShadeModel(GL_FLAT);
+	//make norm arrays　for each points
+	SimpleVertex3 norms[_spectrums.size()][FFT_SIZE/2];
+    for (int s = 1; s < _spectrums.size() - 1; s++){
+        for (int f = 1; f < (FFT_SIZE/2 - 1); f++){
+            
+            SimpleVertex3 around_triangles[][3] = {
+                {points[s-1][f], points[s][f-1], points[s][f]},
+                {points[s-1][f], points[s][f], points[s-1][f+1]},
+                {points[s-1][f+1], points[s][f], points[s][f+1]},
+                {points[s][f], points[s][f-1], points[s+1][f-1]},
+                {points[s][f], points[s+1][f-1], points[s+1][f]},
+                {points[s][f], points[s+1][f], points[s][f+1]}
+            };
+			
+			norms[s][f] = mean_norm_from_triangles(around_triangles, 6);
+        }
+    }
+	
+	//TODO 端っこの法線ベクトルを正しく計算する。
+	for (int f = 0; f < (FFT_SIZE/2 -1); f++){
+		norms[0][f] = SimpleVertex3(0,0,0);
+	}
+	for (int s = 0; s < _spectrums.size() - 1; s++){
+		norms[s][0] = SimpleVertex3(0,0,0);
+	}
+
+
+
 	glEnable(GL_NORMALIZE);
 	for (int sindex = 0; sindex < _spectrums.size()-1; sindex++){
 		glBegin(GL_TRIANGLES);		//want use GL_TRIANGLE_STRIP..
@@ -314,24 +366,40 @@ static const int SPECTRUM3D_COUNT = 100;
 			int s = sindex;
 			int f = findex;
 			
-			GLfloat norm[3];
-			GLfloat v1[3] = {points[s][f].x, points[s][f].y, points[s][f].z};
-			GLfloat v2[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
-			GLfloat v3[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
-			norm_from_triangle(v1,v2,v3,norm);
-			glNormal3fv(norm);
-			glVertex3fv(v1);
-			glVertex3fv(v2);
-			glVertex3fv(v3);
-			
-			GLfloat v4[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
-			GLfloat v5[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
-			GLfloat v6[3] = {points[s+1][f+1].x, points[s+1][f+1].y, points[s+1][f+1].z};
-			norm_from_triangle(v4,v5,v6,norm);
-			glNormal3fv(norm);
-			glVertex3fv(v4);
-			glVertex3fv(v5);
-			glVertex3fv(v6);
+			if (bUsePlaneVector){
+				GLfloat norm[3];
+				
+				GLfloat v1[3] = {points[s][f].x, points[s][f].y, points[s][f].z};
+				GLfloat v2[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
+				GLfloat v3[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
+				norm_from_triangle(v1,v2,v3,norm);
+				
+				glNormal3fv(norm);
+				glVertex3fv(v1);
+				glVertex3fv(v2);
+				glVertex3fv(v3);
+				
+				GLfloat v4[3] = {points[s][f+1].x, points[s][f+1].y, points[s][f+1].z};
+				GLfloat v5[3] = {points[s+1][f].x, points[s+1][f].y, points[s+1][f].z};
+				GLfloat v6[3] = {points[s+1][f+1].x, points[s+1][f+1].y, points[s+1][f+1].z};
+				norm_from_triangle(v4,v5,v6,norm);
+				glNormal3fv(norm);
+				glVertex3fv(v4);
+				glVertex3fv(v5);
+				glVertex3fv(v6);
+			}else{
+
+				int indexses[6][2] = {	//vertex two indexes, for s and f indexes[n][0=s, 1 =f] 
+					{0,0},{1,0},{0,1},{0,1},{1,0},{1,1}};
+				for (int iVertex = 0; iVertex < 6 ; iVertex++){
+					int index_s = s + indexses[iVertex][0];
+					int index_f = f + indexses[iVertex][1];
+					const SimpleVertex3 &norm = norms[index_s][index_f];
+					const SimpleVertex3 &vert = points[index_s][index_f];
+					glNormal3f(norm.x, norm.y, norm.z);
+					glVertex3f(vert.x, vert.y, vert.z);
+				}
+			}
 			
 		}
 		glEnd();
@@ -401,14 +469,24 @@ static const int SPECTRUM3D_COUNT = 100;
 
 -(void)drawRect:(NSRect)dirtyRect{
 	
+	//background
 	[[NSColor blackColor] openGLClearColor];
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	
+	//shade mode.
+	if(_smooth){
+		glShadeModel(GL_SMOOTH);
+	}else{
+		glShadeModel(GL_FLAT);
+	}
+	
 	
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	
 	glPushMatrix();{
-		glLightfv(GL_LIGHT0, GL_POSITION, light0Position);	//fixed light //seemds needs more light
+		//glLightfv(GL_LIGHT0, GL_POSITION, light0Position);	//fixed light //seemds needs more light
 		if (_rotateByTrackball){
 			glTranslatef(0.0, 0.0, 0.0);//more tweak should go here
 			glRotatef(_trackballRotation[0], _trackballRotation[1], _trackballRotation[2], _trackballRotation[3]);
@@ -418,7 +496,7 @@ static const int SPECTRUM3D_COUNT = 100;
 			glMultMatrixf(m);
 		}
 		
-		//glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
+		glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
 		GLwithLight(^(void){
 			const GLfloat materialCol[] = {0.2,0.2,0.5,1};
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol);
@@ -428,8 +506,8 @@ static const int SPECTRUM3D_COUNT = 100;
 				glutSolidTeapot(0.1);
 			}glPopMatrix();
 			
-			const GLfloat materialCol2[] = {0.7,0.3,0.0,1};
-			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol2);
+			//const GLfloat materialCol2[] = {0.7,0.3,0.0,1};
+			//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol2);
 			[self drawSpectrumMesh];
 		
 		});
@@ -548,6 +626,25 @@ static const int SPECTRUM3D_COUNT = 100;
 	//[self mouseDragged: theEvent];
 }
 
+-(void)keyDown:(NSEvent *)theEvent
+{
+	NSLog(@"Keydown");
+    NSString *characters = [theEvent characters];
+    if ([characters length]) {
+        unichar character = [characters characterAtIndex:0];
+		switch (character) {
+			case 'r':	//reset the world notation
+				[self resetWorldRotation];
+				[self setNeedsDisplay: YES];
+				return;
+		}
+	}
+	
+	//path-throw other events
+	[super keyDown:theEvent];
+}
+
+
 
 #pragma mark ---- Setter with redraw ----
 - (void)setRotateByTrackball:(Boolean)rotateByTrackball{
@@ -564,5 +661,9 @@ static const int SPECTRUM3D_COUNT = 100;
 	[self setNeedsDisplay:YES];
 }
 
+-(void)setSmooth:(Boolean)smooth{
+	_smooth = smooth;
+	[self setNeedsDisplay:YES];
+}
 
 @end

@@ -99,8 +99,8 @@ class Controller
 	end
 	
 	def ontimer(timer)
-		#return if @state != :play
-		#@wave_view.piriodicUpdate
+		return if @state != :play
+		@wave_view.piriodicUpdate
 		#@spectrum_view.setNeedsDisplay(true)
 	end
 	

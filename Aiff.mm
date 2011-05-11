@@ -200,7 +200,7 @@ signed short swapByteOrderShort(signed short org){
 			//_stlbuffer.push_back(swapByteOrderShort(samples[i]));
 			float val = swapByteOrderShort(samples[i]);
 			val /= SHORT_MAX;
-			val *= 0.2;
+			val *= 0.99;		//avoid clipping.
 			
 			if (0 == (i % 2)){
 				_left.push_back(val);
@@ -429,7 +429,7 @@ signed short swapByteOrderShort(signed short org){
 	return YES;
 }
 
-//observer
+//observer TBD:use Cocoa KVO
 - (void)observeFrameChange:(id) observer forSelector:(SEL) sel{
 	_observer = observer;
 	_notify_selector = sel;

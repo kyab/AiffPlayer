@@ -29,3 +29,31 @@ void norm_from_triangle(const float *v0, const float *v1, const float *v2, float
 	float two[] = {v2[0] - v0[0],  v2[1] - v0[1],  v2[2] - v0[2]};
 	cross(one,two,norm);
 }
+
+SimpleVertex3 norm_from_triangle(const SimpleVertex3 &v0, const SimpleVertex3 &v1, const SimpleVertex3 &v2){
+    SimpleVertex3 one = v1 - v0;
+    SimpleVertex3 two = v2 - v0;
+    
+    return one.cross(two);
+}
+
+SimpleVertex3 mean_norm_from_triangles(/*const */SimpleVertex3 triangles[][3], int triangleNum){
+    
+    SimpleVertex3 norms[triangleNum];
+    //i want map() i want functional!!
+    for(int i = 0 ; i < triangleNum; i++){
+        norms[i] = norm_from_triangle( triangles[i][0], triangles[i][1], triangles[i][2]);
+    }
+    
+    SimpleVertex3 mean_norm(0.0,0.0,0.0);
+    for (int i = 0; i < triangleNum; i++){
+        mean_norm.x += norms[i].x;
+        mean_norm.y += norms[i].y;
+        mean_norm.z += norms[i].z;
+    }
+    mean_norm.x /= triangleNum;
+    mean_norm.y /= triangleNum;
+    mean_norm.z /= triangleNum;
+    return mean_norm;
+    
+}

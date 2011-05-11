@@ -10,8 +10,48 @@
 #include <math.h>
 #import <Cocoa/Cocoa.h>
 
+struct SimpleVertex3{
+	float x;
+	float y;
+	float z;
+public:
+    SimpleVertex3(){
+        ;
+    }
+    
+    SimpleVertex3(const SimpleVertex3 &other){
+        x = other.x;
+        y = other.y;
+        z = other.z;
+    }
+    SimpleVertex3(float x, float y, float z){
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+    
+    
+	SimpleVertex3 operator -(const SimpleVertex3 &right) const{
+        return SimpleVertex3( x - right.x, y - right.y, z - right.z);
+	}
+	
+	SimpleVertex3 cross(const SimpleVertex3 &right) const{
+	    SimpleVertex3 result;
+        result.x = y*right.z - z * right.y;
+        result.y = z*right.x - x * right.z;
+        result.z = x*right.y - y * right.x;
+        return result;
+	}
+};
+
+//free functions
+
+
 void cross(const float *v1, const float *v2, float *result_vector);
 void norm_from_triangle(const float *v0, const float *v1, const float *v2, float *norm);
+
+SimpleVertex3 norm_from_triangle(const SimpleVertex3 *v0, const SimpleVertex3 *v1, const SimpleVertex3 *v2);
+SimpleVertex3 mean_norm_from_triangles(/*const */SimpleVertex3 triangles[][3], int triangleNum);
 
 float rad(float degree);
 
