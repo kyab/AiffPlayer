@@ -76,8 +76,8 @@ bool isSameRect(const NSRect &rect1, const NSRect &rect2){
 
 -(void)recreateWavePath2{
 	
-	[_wavepath release];
-	_wavepath =  [[NSBezierPath bezierPath] retain];
+	//[_wavepath release];
+	_wavepath =  [NSBezierPath bezierPath];
 	
 	NSRect bounds = [self bounds];
 	

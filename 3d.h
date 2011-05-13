@@ -24,7 +24,7 @@ public:
         y = other.y;
         z = other.z;
     }
-    SimpleVertex3(float x, float y, float z){
+    inline SimpleVertex3(float x, float y, float z){
         this->x = x;
         this->y = y;
         this->z = z;

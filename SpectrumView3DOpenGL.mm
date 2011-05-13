@@ -29,18 +29,16 @@ GLfloat m[16];
 static GLuint displayList_Spectrum = 1;
 void
 drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
-{
-	int len, i;
-	
+{	
 	glRasterPos3f(x, y, z);
-	len = (int) strlen(string);
-	for (i = 0; i < len; i++) {
+
+	for (int i = 0; i < strlen(string); i++) {
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
 	}
 }
 
-static const int FFT_SIZE = 256;
-static const int SPECTRUM3D_COUNT = 500;
+static const int FFT_SIZE = 32;
+static const int SPECTRUM3D_COUNT = 20;
 
 @implementation SpectrumView3DOpenGL
 
@@ -48,6 +46,7 @@ static const int SPECTRUM3D_COUNT = 500;
 @synthesize log = _log;
 @synthesize rotateByTrackball = _rotateByTrackball;
 @synthesize smooth = _smooth;
+@synthesize mesh = _mesh;
 
 //for view instances created in Interface Builder(except NSCustomView Proxy) 
 //initWithFrame not called. see: http://msyk.net/mdonline/msgbox/messageshow_54406.html
@@ -68,6 +67,7 @@ static const int SPECTRUM3D_COUNT = 500;
 	[self setLog:NO];
 	[self setRotateByTrackball:YES];
 	[self setSmooth:YES];
+	[self setMesh:NO];
 	_aiff = nil;
 	
 	for (int i = 0 ; i < 4; i++){
@@ -292,24 +292,24 @@ static const int SPECTRUM3D_COUNT = 500;
 					z:(float *)pZ{
 	float amp = abs(spectrum[freq_index])/spectrum.size();
 	float db = 20 * std::log10(amp);
-	if( db < -96.0) db = -96.0f;	//cutoff low values
+	if( db < -96.0f) db = -96.0f;	//cutoff low values
 	
 	*pX/*time*/ = spec_index * 1.0 / _spectrums.size();
-	*pY/*value*/ = (db + 96.0) * 1.0/96.0;	//1 for 96db
+	*pY/*value*/ = (db + 96.0f) * 1.0f/96.0f;	//1 for 96db
 	*pZ/*freq*/ = freq_index * 1.0/(FFT_SIZE/2); 
 	
 	//tweaking
 	//time
-	*pX -= 0.5;	//centerize
-	*pX *= 1.9;	//scale
+	*pX -= 0.5f;	//centerize
+	*pX *= 1.9f;	//scale
 	
 	//amp //visible tweak
-	*pY *= 0.5;
+	*pY *= 0.5f;
 	
 	//
-	*pZ *= -1.0;	//z- axis is upside-down for openGL
-	*pZ += 0.5;	//centerize;
-	*pZ *= 1.5;	//scale	
+	*pZ *= -1.0f;	//z- axis is upside-down for openGL
+	*pZ += 0.5f;	//centerize;
+	*pZ *= 1.5f;	//scale	
 }
 
 -(void)drawSpectrumMesh{
@@ -481,6 +481,12 @@ static const int SPECTRUM3D_COUNT = 500;
 		glShadeModel(GL_FLAT);
 	}
 	
+	//mesh mode
+	if (_mesh){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}else{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//default
+	}
 	
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
@@ -500,20 +506,18 @@ static const int SPECTRUM3D_COUNT = 500;
 		GLwithLight(^(void){
 			const GLfloat materialCol[] = {0.2,0.2,0.5,1};
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol);
-			//[self drawSamplePlanes];
+		
 			glPushMatrix();{
-				glTranslated(0,0.4,-0.4);
+				glTranslated(0,0.4,-0.4);	
+
 				glutSolidTeapot(0.1);
 			}glPopMatrix();
-			
-			//const GLfloat materialCol2[] = {0.7,0.3,0.0,1};
-			//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol2);
+					
 			[self drawSpectrumMesh];
 		
 		});
-		//glCallList(displayList_Spectrum);
-		[self drawAxis];
 		
+		[self drawAxis];
 
 	}glPopMatrix();
 	
@@ -637,6 +641,12 @@ static const int SPECTRUM3D_COUNT = 500;
 				[self resetWorldRotation];
 				[self setNeedsDisplay: YES];
 				return;
+			case 'm':
+				[self setMesh:!(self.mesh)];
+				return;
+			case 's':
+				[self setSmooth:!(self.smooth)];
+				return;
 		}
 	}
 	
@@ -663,6 +673,11 @@ static const int SPECTRUM3D_COUNT = 500;
 
 -(void)setSmooth:(Boolean)smooth{
 	_smooth = smooth;
+	[self setNeedsDisplay:YES];
+}
+
+-(void)setMesh:(Boolean)mesh{
+	_mesh = mesh;
 	[self setNeedsDisplay:YES];
 }
 
