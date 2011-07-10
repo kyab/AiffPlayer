@@ -30,8 +30,7 @@ typedef std::vector<Dcomplex> Spectrum;
 	Boolean _log;
 	Boolean _smooth;
 	Boolean _mesh;
-	
-	Boolean _rotateByTrackball;	//
+
 	GLfloat _worldRotation[4];
 	GLfloat _trackballRotation[4];
 	
@@ -42,7 +41,6 @@ typedef std::vector<Dcomplex> Spectrum;
 
 @property(assign)Boolean enabled;
 @property(assign)Boolean log;
-@property(assign)Boolean rotateByTrackball;
 @property(assign)Boolean smooth;
 @property(assign)Boolean mesh;
 
