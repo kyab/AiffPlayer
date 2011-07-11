@@ -37,8 +37,8 @@ drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
 	}
 }
 
-static const int FFT_SIZE = 32;
-static const int SPECTRUM3D_COUNT = 20;
+static const int FFT_SIZE = 512;
+static const int SPECTRUM3D_COUNT = 200;
 
 @implementation SpectrumView3DOpenGL
 
@@ -63,7 +63,7 @@ static const int SPECTRUM3D_COUNT = 20;
 	NSLog(@"OpenGL awake from nib");
 	
 	[self setEnabled:YES];
-	[self setLog:NO];
+	[self setLog:YES];
 	[self setSmooth:YES];
 	[self setMesh:NO];
 	_aiff = nil;
@@ -195,47 +195,6 @@ static const int SPECTRUM3D_COUNT = 20;
 	drawGLString(0, 0, -1.0, "freq");
 }
 
--(void)drawSamplePlanes{
-	
-	//don't draw back side
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	
-	glEnable(GL_NORMALIZE);	//法線ベクトルの自動正規化
-	
-	//[[NSColor orangeColor] openGLColor4f];
-	
-	glBegin(GL_TRIANGLES);{
-
-		float vertexes[2][3][3] = {
-			{
-				{-0.6, -0.3, 0.0},
-				{0.6, -0.3, 0.0},
-				{0.6, 0.3, 0.0}
-			},
-			{
-				{-0.6, -0.3, 0.0},
-				{0.6, 0.3, 0.0},
-				{-0.6, 0.3, -0.6}
-			}
-		};
-		GLfloat norm[3];
-		
-		norm_from_triangle(vertexes[0][0], vertexes[0][1] , vertexes[0][2],norm);			
-		glNormal3fv(norm);
-		glVertex3fv(vertexes[0][0]);
-		glVertex3fv(vertexes[0][1]);
-		glVertex3fv(vertexes[0][2]);
-			
-		norm_from_triangle(vertexes[1][0], vertexes[1][1] , vertexes[1][2],norm);			
-		glNormal3fv(norm);
-		glVertex3fv(vertexes[1][0]);
-		glVertex3fv(vertexes[1][1]);
-		glVertex3fv(vertexes[1][2]);
-   }glEnd();
-	
-	glDisable(GL_NORMALIZE);
-}
 
 -(void)calculateSpectrums{
 	_spectrums.clear();
@@ -267,20 +226,28 @@ static const int SPECTRUM3D_COUNT = 20;
 	
 	*pX/*time*/ = spec_index * 1.0 / _spectrums.size();
 	*pY/*value*/ = (db + 96.0f) * 1.0f/96.0f;	//1 for 96db
-	*pZ/*freq*/ = freq_index * 1.0/(FFT_SIZE/2); 
-	
+	if (_log){
+		float freq = freq_index * 44100/(FFT_SIZE);
+		float logFreq = std::log10(freq);
+		if (logFreq < 1.0f) logFreq = 0.0f;
+		*pZ = 1.0/(std::log10(44100) - std::log10(10)) * logFreq;
+ 	}else{
+		*pZ/*freq*/ = freq_index * 1.0/(FFT_SIZE/2); 
+	}
 	//tweaking
 	//time
 	*pX -= 0.5f;	//centerize
 	*pX *= 1.9f;	//scale
+	//*pX *= -1.0f;		//これを変えるときは、法線ベクトルも考慮しないと、
+	//光の当たり方が変わってしまう。。
 	
 	//amp //visible tweak
 	*pY *= 0.5f;
 	
 	//
 	*pZ *= -1.0f;	//z- axis is upside-down for openGL
-	*pZ += 0.5f;	//centerize;
-	*pZ *= 1.5f;	//scale	
+	*pZ += 1.0f;	//centerize;
+	*pZ *= 4.0f;	//scale	
 }
 
 -(void)drawSpectrumMesh{
@@ -420,6 +387,8 @@ static const int SPECTRUM3D_COUNT = 20;
 	NSLog(@"Spectrum drawed");
 }
 
+
+
 -(void)compileSpectrumsToDisplayList{
 	static bool firstCall = true;
 	if (firstCall){
@@ -443,8 +412,7 @@ static const int SPECTRUM3D_COUNT = 20;
 	//background
 	[[NSColor blackColor] openGLClearColor];
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	
+
 	//shade mode.
 	if(_smooth){
 		glShadeModel(GL_SMOOTH);
@@ -462,6 +430,12 @@ static const int SPECTRUM3D_COUNT = 20;
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	
+	glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
+	glPushMatrix();{
+		glTranslated(light0Position[0], light0Position[1], light0Position[2]);
+		glutSolidTeapot(0.05);
+	}glPopMatrix();
+		
 	glPushMatrix();{
 		//glLightfv(GL_LIGHT0, GL_POSITION, light0Position);	//fixed light //seemds needs more light
 
@@ -469,7 +443,7 @@ static const int SPECTRUM3D_COUNT = 20;
 		glRotatef(_trackballRotation[0], _trackballRotation[1], _trackballRotation[2], _trackballRotation[3]);
 		glRotatef(_worldRotation[0], _worldRotation[1], _worldRotation[2], _worldRotation[3]);
 		
-		glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
+		//glLightfv(GL_LIGHT1, GL_POSITION, light0Position);
 		GLwithLight(^(void){
 			const GLfloat materialCol[] = {0.2,0.2,0.5,1};
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialCol);
