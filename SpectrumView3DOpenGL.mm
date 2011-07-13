@@ -37,7 +37,7 @@ drawGLString(GLfloat x, GLfloat y, GLfloat z, const char *string)
 	}
 }
 
-static const int FFT_SIZE = 512;
+static const int FFT_SIZE = 4048;
 static const int SPECTRUM3D_COUNT = 200;
 
 @implementation SpectrumView3DOpenGL
@@ -46,6 +46,7 @@ static const int SPECTRUM3D_COUNT = 200;
 @synthesize log = _log;
 @synthesize smooth = _smooth;
 @synthesize mesh = _mesh;
+@synthesize timeResolution = _timeResolution;
 
 //for view instances created in Interface Builder(except NSCustomView Proxy) 
 //initWithFrame not called. see: http://msyk.net/mdonline/msgbox/messageshow_54406.html
@@ -62,10 +63,12 @@ static const int SPECTRUM3D_COUNT = 200;
 -(void)awakeFromNib{
 	NSLog(@"OpenGL awake from nib");
 	
+	
 	[self setEnabled:YES];
 	[self setLog:YES];
 	[self setSmooth:YES];
 	[self setMesh:NO];
+	[self setTimeResolution:30];
 	_aiff = nil;
 	
 	[self resetWorldRotation];
@@ -199,6 +202,7 @@ static const int SPECTRUM3D_COUNT = 200;
 -(void)calculateSpectrums{
 	_spectrums.clear();
 	
+	/*
 	for (int i = 0 ; i < SPECTRUM3D_COUNT; i++){
 		_spectrums.push_back(Spectrum(FFT_SIZE, 0.0));
 	}
@@ -210,7 +214,28 @@ static const int SPECTRUM3D_COUNT = 200;
 	for (int i = 0; i < SPECTRUM3D_COUNT; i++){
 		UInt32 frame = (UInt32)([_aiff totalFrameCount] * (start + i*rate));
 		[_aiff fastFFTForFrame:frame toBuffer:_spectrums[i] size:FFT_SIZE];
+	}*/
+	_spectrums.clear();
+	////---------------------------
+	UInt32 totalFrameCount = [_aiff totalFrameCount];
+	RangeX *selection = [_aiff selection];
+	float start_rate = selection.start / 100.f;
+	
+	float samples_per_timeFrame = (UInt32)(44100.0 / _timeResolution);
+	UInt32 start_frame = UInt32( start_rate * totalFrameCount);
+	UInt32 frame = start_frame;
+	UInt32 i = 0;
+	while(frame){
+		_spectrums.push_back(Spectrum(FFT_SIZE, 0.0));
+		[_aiff fastFFTForFrame:frame toBuffer:_spectrums[i] size:FFT_SIZE];
+		
+		i++;
+		frame += samples_per_timeFrame;
+		if (frame > selection.end/100.0f * totalFrameCount){
+			break;
+		}
 	}
+	NSLog(@"Spectrum count = %d",_spectrums.size());
 
 }
 
@@ -251,8 +276,10 @@ static const int SPECTRUM3D_COUNT = 200;
 }
 
 -(void)drawSpectrumMesh{
+	if (_aiff == nil) return;
+	
 	if (!_enabled) return;
-
+	[self calculateSpectrums];
 	bool bUsePlaneVector = false;
 	
 	//make vertex arrays
@@ -453,9 +480,10 @@ static const int SPECTRUM3D_COUNT = 200;
 
 				glutSolidTeapot(0.1);
 			}glPopMatrix();
-					
+			
+			NSLog(@"drawing spectrum...");
 			[self drawSpectrumMesh];
-		
+			NSLog(@"drawing spectrum...done");
 		});
 		
 		[self drawAxis];
@@ -566,6 +594,12 @@ static const int SPECTRUM3D_COUNT = 200;
 
 -(void)setMesh:(Boolean)mesh{
 	_mesh = mesh;
+	[self setNeedsDisplay:YES];
+}
+
+-(void)setTimeResolution:(UInt32)timeResolution{
+	_timeResolution = timeResolution;
+	NSLog(@"timeResolution changed:%d",_timeResolution);
 	[self setNeedsDisplay:YES];
 }
 

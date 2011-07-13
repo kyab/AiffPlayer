@@ -30,6 +30,7 @@ typedef std::vector<Dcomplex> Spectrum;
 	Boolean _log;
 	Boolean _smooth;
 	Boolean _mesh;
+	UInt32 _timeResolution;
 
 	GLfloat _worldRotation[4];
 	GLfloat _trackballRotation[4];
@@ -43,6 +44,7 @@ typedef std::vector<Dcomplex> Spectrum;
 @property(assign)Boolean log;
 @property(assign)Boolean smooth;
 @property(assign)Boolean mesh;
+@property(assign)UInt32 timeResolution;
 
 @end
 
